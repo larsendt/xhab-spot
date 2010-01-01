@@ -17,7 +17,7 @@
 #include <Python.h>
 #include "gpiodriver.h"
 
-//#define MAXTIMINGS 100
+#define MAXTIMINGS 100
 #define DHT22_DATA_BIT_COUNT 41
 
 int readDHT(int pin, float *temp, float *hum)
@@ -45,13 +45,13 @@ int readDHT(int pin, float *temp, float *hum)
 
   setPinMode(modeID,OUTPUT);
   setPin(pinID,HIGH);
-  //  printf("value %c \n", getPin(pinID));
+  printf("value %c \n", getPin(pinID));
   //gpio_set(pin,OUTPUT);
   
   //gpio_write(pin, HIGH);
   //  usleep(500000); //500 ms
 
-  // printf(" value written after seting high  %c \n", getPin(pinID));
+ printf(" value written after sending activate pulse %c \n", getPin(pinID));
 
 // Pin needs to start HIGH, wait until it is HIGH with a timeout  
   retryCount = 0;
@@ -71,12 +71,12 @@ int readDHT(int pin, float *temp, float *hum)
   // Send the activate pulse
   //gpio_write(pin, LOW);
   setPin(pinID,LOW);
-  usleep(10000); //1.1 ms
+  usleep(1100); //1.1 ms
 
   setPin(pinID,HIGH); //host pulls up high
-   usleep(40);// host pulls up high to wait for ack pulse
+  // usleep(40);// host pulls up high to wait for ack pulse
   
-  //printf(" value written after sending activate pulse %c \n", getPin(pinID));
+  printf(" value written after sending activate pulse %c \n", getPin(pinID));
  // Switch back to input so pin can float
   //gpio_set(pin,INPUT);
   setPinMode(modeID, INPUT);
@@ -96,23 +96,9 @@ int readDHT(int pin, float *temp, float *hum)
 	}
       retryCount++;
       usleep(2);
-    } while(getPin(pinID) == HIGH);
-  //printf(" host is pulled up for rc: %d\n", retryCount);
+    } while(getPin(pinID) == LOW);
+  printf(" host is pulled up for rc: %d", retryCount);
 
-  
-  //Find the start of sensor pull up that happens in between ack pulse
-  retryCount = 0;
-  do
-    {
-      if(retryCount > 50) //(spec says 80 us, 50 * 2  == 100 us)
-	{
-	  return DHT_ERROR_ACK_TOO_LONG;
-	}
-      retryCount++;
-      usleep(2);
-    }while(getPin(pinID) == LOW);
-  //printf(" sensor ack pull down for rc: %d\n", retryCount);
-	  
   // Find the end of the ACK Pulse
   retryCount = 0;
   do
@@ -124,9 +110,8 @@ int readDHT(int pin, float *temp, float *hum)
       retryCount++;
       usleep(2);
     } while(getPin(pinID) == HIGH);
-  //printf(" sensor pull up low for ack for rc : %d\n", retryCount);
+  printf(" sensor pull up low for ack for rc : %d\n", retryCount);
 
-  
   /*//wait for pin to drop
   //while(gpio_read(pin) == 1){
   int k = 0;
@@ -154,7 +139,7 @@ int readDHT(int pin, float *temp, float *hum)
     retryCount = 0;
     do
       {
-	if (retryCount > 50) //(Spec is 80 us, 50*2 == 100 us)
+	if (retryCount > 300) //(Spec is 80 us, 50*2 == 100 us)
 	  {
 	    return DHT_ERROR_DATA_TIMEOUT;
 	  }

@@ -10,7 +10,7 @@ if len(sys.argv) != 2:
     sys.exit(2)
 
 dhtpin = int(sys.argv[1])
-if dhtpin <= 0: #check what the boundary condition for gpio pin number should be"
+if dhtpin < 0 and dhtpin > 17: #check what the boundary condition for gpio pin number should be"
     print("invalid GPIO pin#")
     sys.exit(3)
 
