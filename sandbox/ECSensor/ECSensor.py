@@ -2,8 +2,8 @@
 
 import time
 
-DpinData="/sys/devices/virtual/misc/gpio/pin/gpio10" 
-DpinMode = "/sys/devices/virtual/misc/gpio/mode/gpio10" 
+DpinData="/sys/devices/virtual/misc/gpio/pin/gpio2" 
+DpinMode = "/sys/devices/virtual/misc/gpio/mode/gpio2" 
 
 ECFname = "/proc/adc2"
 TempFname = "/proc/adc3"
@@ -39,6 +39,10 @@ while True:
     Dfile.write(LOW)
     Dfile.close()
     print "EC Value :" + str(ECVal)
-    print "Temperature Value :" + str(TVal) 
-    
-
+    ##print "Temperature Value :" + str(TVal) 
+    Temp = int(TVal)
+    y = (0.0000060954 * pow(Temp,2)) + (0.00690983 * Temp) + 20.9983
+    print "Temperature value : " + str(int(y)) + "F"
+    Temp1 = long(ECVal)
+    y1 = (0.0023 * pow(Temp1,2)) - (12.6 * Temp1) + 17520.1
+    print "EC value : " + str(int(y1)) + "microS/cm"
