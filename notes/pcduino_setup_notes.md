@@ -106,12 +106,14 @@ to
 
 Add more here as needed
 
-*git
-*vim
-*ros-groovy-ros-base
+* git
+* vim
+* ros-groovy-ros-base
 
 ## Things done so far
+
 spot-1 2/15/2014:
+
     partitions on SD card created
     migrated /var /usr and /home
     created xhab user
@@ -127,6 +129,7 @@ spot-1 2/15/2014:
     done for now
 
 spot-2 2/15/2014:
+
     created xhab user
     added xhab user to sudo group
     set hostname to spot-2
@@ -140,6 +143,7 @@ spot-2 2/15/2014:
     done for now
 
 spot-3 2/15/2014:
+
     reinstalled ubuntu
     set hostname to spot-3
     created xhab user and added to sudo group
@@ -147,6 +151,7 @@ spot-3 2/15/2014:
     updated system
 
 spot-4 2/15/2014:
+
     installed git+vim
     fixed /etc/apt/sources.list
     autoconnect to UCB Wireless
