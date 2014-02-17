@@ -70,7 +70,7 @@ Last updated `2/17/2014`
 
 ## SPOT 4
 
-**spot-4 is almost ready**
+**spot-4 is good to go!**
 
 Last updated `2/17/2014`
 
@@ -79,6 +79,7 @@ Last updated `2/17/2014`
     updated system
     installed ROS
     created xhab user and added to sudo group
+    autoconnect to UCB Wireless
 
     ---- 2/15/2014 ----
     installed git+vim
