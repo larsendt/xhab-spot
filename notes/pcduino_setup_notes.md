@@ -25,27 +25,38 @@ The wlanX number can be found by running `ifconfig`
 
 ## Partition the SD card
 
+The following sizes assume an 8GB SD card. If you're using a different size, you
+might consider tweaking the partition sizes.
+
 * 1GB for /var (mmcblk0p1)
 * 2GB for /usr (mmcblk0p2)
-* the rest for /home (mmcblk0p3)
+* the rest (5GB ish) for /home (mmcblk0p3)
 
-Run the `fdisk` command
+My (Dane's) reasoning for having `/var` `/usr` and `/home` on the SD card:
+
+* /usr is already 1GB on the default install, and will grow as more things are installed
+* /var is the cache for `apt`, and will need more space
+* /home is where all of the sensor data for SPOT will be put
+
+Run the `fdisk` command **THIS WILL WIPE ALL DATA ON THE SD CARD**
 
     fdisk /dev/mmcblk0
 
-Input the following (not including the comments marked with #, `<enter>` means hit the enter key)
+Input the following (not including the comments marked with #, `<enter>` means
+hit the enter key) At any point, you can type `q` to quit. None of the changes
+will be made until you type `w`
 
     d         #delete the existing partition
     n         #create a new partiton for /var
     <enter>   #make the partition type 'primary'
     <enter>   #set the partition number
     <enter>   #set the location of the first sector
-    +1G       #size the first partion to 1GB
+    +1G       #size the first partion to 1GiB
     n         #create a new partition for /usr
     <enter>   #make the partition type 'primary'
     <enter>   #set the partition number
     <enter>   #set the location of the first sector
-    +2G       #size the partition to 2GB
+    +2G       #size the partition to 2GiB
     n         #create a new partition for /home
     <enter>   #make the partition type 'primary'
     <enter>   #set the partition number
@@ -68,6 +79,8 @@ Add the following lines to the fstab (insert between 1st and second line)
     /dev/mmcblk0p1  /var    ext4    defaults,noatime    0   0
     /dev/mmcblk0p2  /usr    ext4    defaults,noatime    0   0
     /dev/mmcblk0p3  /home   ext4    defaults,noatime    0   0
+
+**REBOOT AFTER DOING THIS**
 
 ## Fix /etc/apt/sources.list
 
