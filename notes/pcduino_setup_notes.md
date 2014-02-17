@@ -64,11 +64,25 @@ will be made until you type `w`
     <enter>   #size the partition to all of the remaining space
     w         #write the changes to the drive
 
-create the filesystems
+
+## Create the ext4 filesystems on the new partitions
 
     mkfs.ext4 /dev/mmcblk0p1
     mkfs.ext4 /dev/mmcblk0p2
     mkfs.ext4 /dev/mmcblk0p3
+
+
+## Migrate the existing files to the new partitions
+
+    cd                             #in root's home dir
+    mkdir tmpvar tmpusr tmphome    #make some temp mountpoints
+    mount /dev/mmcblk0p1 tmpvar    #mount the /var partition
+    mount /dev/mmcblk0p2 tmpusr    #mount the /usr partition
+    mount /dev/mmcblk0p3 tmphome   #mount the /home partition
+    cp -pr /var/* tmpvar           #copy all of /var's contents to the var partition
+    cp -pr /usr/* tmpusr           #copy all of /usr's contents to the usr partition
+    cp -pr /usr/* tmphome          #copy all of /home's contents to the home partition
+
 
 ## Mount folders
 
@@ -82,20 +96,26 @@ Add the following lines to the fstab (insert between 1st and second line)
 
 **----> REBOOT AFTER DOING THIS <----**
 
+`/var`, `/usr`, and `/home` are now on the SD card
+
 ## Fix /etc/apt/sources.list
 
-In the above file, change each url from
+In the above file, change each ubuntu url from
 
     http://ports.ubuntu.com/ubuntu-ports/
 
 to
 
-    http://ports.ubuntu.com
+    http://ports.ubuntu.com/
+
+Also, comment out all wiimu.com lines with the # character
+
 
 ## Run updates
 
     sudo apt-get update
     sudo apt-get upgrade
+
 
 ## Generate ssh keys as the xhab user
 
@@ -110,9 +130,12 @@ Add more here as needed
 * vim
 * ros-groovy-ros-base
 
-## Things done so far
 
-spot-1 2/15/2014:
+## Current status of each PCDuino
+
+**spot-1 is good to go!**
+
+Work log for spot-1 2/15/2014:
 
     partitions on SD card created
     migrated /var /usr and /home
@@ -128,6 +151,8 @@ spot-1 2/15/2014:
     set wireless to autoconnect to UCB Wireless
     done for now
 
+**spot-2 is good to go!**
+
 spot-2 2/15/2014:
 
     created xhab user
@@ -142,6 +167,9 @@ spot-2 2/15/2014:
     set wireless to autoconnect to UCB Wireless
     done for now
 
+**spot-3 currently does not boot :(**
+Dane is working on the problem
+
 spot-3 2/15/2014:
 
     reinstalled ubuntu
@@ -149,6 +177,8 @@ spot-3 2/15/2014:
     created xhab user and added to sudo group
     creating partitions
     updated system
+
+**spot-4 is almost ready**
 
 spot-4 2/15/2014:
 
