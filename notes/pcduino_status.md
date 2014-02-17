@@ -3,6 +3,9 @@
 All of them have commit access to the github repositories under Dane's account.
 Use responsibly!
 
+The primary user is `xhab`. Ask Dane for the password (not putting it here
+since this document is public).
+
 ## Current status of each PCDuino
 
 **spot-1 is good to go!**
