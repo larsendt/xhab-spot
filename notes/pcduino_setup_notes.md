@@ -80,7 +80,7 @@ Add the following lines to the fstab (insert between 1st and second line)
     /dev/mmcblk0p2  /usr    ext4    defaults,noatime    0   0
     /dev/mmcblk0p3  /home   ext4    defaults,noatime    0   0
 
-**REBOOT AFTER DOING THIS**
+**----> REBOOT AFTER DOING THIS <----**
 
 ## Fix /etc/apt/sources.list
 
