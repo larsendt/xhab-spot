@@ -2,10 +2,10 @@
 
 ## Create the xhab user and make admin
 
+Set the password to xhab
+
     sudo adduser xhab
     sudo adduser xhab sudo
-
-Set the password to xhab
 
 ## Change hostname
 
@@ -29,7 +29,29 @@ The wlanX number can be found by running `ifconfig`
 * 2GB for /usr (mmcblk0p2)
 * the rest for /home (mmcblk0p3)
 
+Run the `fdisk` command
+
     fdisk /dev/mmcblk0
+
+Input the following (not including the comments marked with #, `<enter>` means hit the enter key)
+
+    d         #delete the existing partition
+    n         #create a new partiton for /var
+    <enter>   #make the partition type 'primary'
+    <enter>   #set the partition number
+    <enter>   #set the location of the first sector
+    +1G       #size the first partion to 1GB
+    n         #create a new partition for /usr
+    <enter>   #make the partition type 'primary'
+    <enter>   #set the partition number
+    <enter>   #set the location of the first sector
+    +2G       #size the partition to 2GB
+    n         #create a new partition for /home
+    <enter>   #make the partition type 'primary'
+    <enter>   #set the partition number
+    <enter>   #set the location of the first sector
+    <enter>   #size the partition to all of the remaining space
+    w         #write the changes to the drive
 
 create the filesystems
 
@@ -41,11 +63,11 @@ create the filesystems
 
     sudo vim /etc/fstab
 
-add the following lines to the fstab (insert between 1st and second line)
+Add the following lines to the fstab (insert between 1st and second line)
 
-/dev/mmcblk0p1  /var    ext4    defaults,noatime    0   0
-/dev/mmcblk0p2  /usr    ext4    defaults,noatime    0   0
-/dev/mmcblk0p3  /home   ext4    defaults,noatime    0   0
+    /dev/mmcblk0p1  /var    ext4    defaults,noatime    0   0
+    /dev/mmcblk0p2  /usr    ext4    defaults,noatime    0   0
+    /dev/mmcblk0p3  /home   ext4    defaults,noatime    0   0
 
 ## Fix /etc/apt/sources.list
 
