@@ -1,0 +1,52 @@
+#!/bin/bash
+
+rm /tmp/feed*
+
+export ROS_MASTER_URI=http://localhost:11311
+export ROS_IP=localhost
+echo 'Set ROS env variables'
+
+echo 'roscore...'
+roscore & > /dev/null 2>&1
+echo 'Launched roscore'
+sleep 5
+
+echo 'rosbridge...'
+roslaunch rosbridge_server rosbridge_websocket.launch & > /dev/null 2>&1
+echo 'Launched rosbridge'
+sleep 5
+
+echo 'rosserial...'
+rosrun rosserial_python serial_node.py /dev/ttyACM0 & > /dev/null 2>&1
+echo 'Launched rosserial'
+sleep 5
+
+echo 'servo receivers...'
+rosrun xhab receiver.py & > /dev/null 2>&1
+echo 'Launch servo receivers'
+sleep 5
+
+echo 'end effectors...'
+rosrun xhab EndEffectorListener.py & > /dev/null 2>&1
+echo 'Launched end effector listener'
+sleep 8
+
+#echo 'XHab Nodes'
+#roslaunch xhab system.launch
+#echo 'launched Xhab Nodes'
+#sleep 5
+
+echo 'cameras...'
+ffserver -d -f /etc/ffserver.conf & > /dev/null 2>&1 && avconv -f video4linux2 -i /dev/video0 -s 640x480 -vcodec flv -r 12 -flags +global_header http://localhost:8090/feed1.ffm & > /dev/null 2>&1 && avconv -f video4linux2 -i /dev/video1 -s 640x480 -vcodec flv -r 12 -flags +global_header http://localhost:8090/feed2.ffm & > /dev/null 2>&1
+echo 'Launched camera server and camera streams'
+sleep 5
+
+echo 'gui...'
+cd ~/Code/xhab-control-panel && source .rvmrc && rails s & > /dev/null 2>&1
+echo 'Launched GUI (http://localhost:3000)'
+sleep 10
+
+echo 'browser...'
+google-chrome localhost:3000
+echo 'lauched gui'
+
