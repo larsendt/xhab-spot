@@ -13,7 +13,6 @@ def talker():
 				raise ValueError("Input must be 0 or 1.")
 			rospy.loginfo(value)
 			pub.publish(String(value))
-			rospy.sleep(1.0)
 			print "wrote", value
 		except ValueError:
 			print "input 0 or 1"
