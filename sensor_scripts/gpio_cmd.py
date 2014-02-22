@@ -45,7 +45,11 @@ elif len(sys.argv) == 4:
 
 	print "Writing %s to %s" % (value, spot_gpio.pin_path(pin))
 	spot_gpio.set_pin_mode(pin, spot_gpio.READ)
-	spot_gpio.set_pin(pin, value)
+	if value == "1":
+		spot_gpio.set_pin(pin, True)
+	else:
+		spot_gpio.set_pin(pin, False)
+		
 
 else:
 	print "Usage: %s <read,write> <pin> [0,1]"
