@@ -1,0 +1,6 @@
+#!/bin/bash
+
+kill -9 `pgrep rosmaster` 2>/dev/null
+kill -9 `pgrep roscore` 2>/dev/null
+kill -9 `pgrep rosout` 2>/dev/null
+echo "Roscore shut down."

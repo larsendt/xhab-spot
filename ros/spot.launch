@@ -1,0 +1,17 @@
+#!/bin/bash
+
+export ROS_MASTER_URI=http://localhost:11311
+export ROS_IP=localhost
+export LOG_DIR=~/logs
+export ROSCORE_LOG=$LOG_DIR/roscore.log
+echo 'Set ROS env variables'
+
+source ~/catkin_ws/devel/setup.bash
+
+mkdir -p $LOG_DIR
+
+echo 'roscore...'
+roscore &> $ROSCORE_LOG &
+echo 'Launched roscore'
+
+
