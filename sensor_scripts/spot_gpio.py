@@ -45,6 +45,10 @@ def get_pin(pin):
 	else:
 		raise ValueError("Pin must be between 0 and 23 (inclusive)")
 
-	
-		
+def pin_path(pin):
+	if 0 <= pin <= 23:
+		return pin_path + "/gpio" + str(pin)
+	else:
+		raise ValueError("Pin must be between 0 and 23 (inclusive)")
+			
 
