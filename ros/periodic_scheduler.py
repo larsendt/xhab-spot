@@ -11,10 +11,10 @@ class Scheduler(object):
     def spin(self):
         while not rospy.is_shutdown():
             self.pub.publish(String("lights on"))
-            print "published lights on"
+            print "scheduled lights on"
             time.sleep(15)
             self.pub.publish(String("lights off"))
-            print "published lights off"
+            print "scheduled lights off"
             time.sleep(15)
 
 
