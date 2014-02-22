@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-sys.path.append("/home/xhab/xhab_spot/sensor_scripts")
+sys.path.append("/home/xhab/xhab-spot/sensor_scripts")
 import spot_gpio
 import rospy
 from std_msgs.msg import String
