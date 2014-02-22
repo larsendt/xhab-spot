@@ -129,5 +129,6 @@ Add more here as needed
 * git
 * vim
 * ros-groovy-ros-base
-
+* python-smbus
+* iTunes (just kidding! -MP)
 
