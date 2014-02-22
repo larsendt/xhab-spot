@@ -29,8 +29,10 @@ def set_pin(pin, on):
 		fname = PIN_PATH + "/gpio" + str(pin)
 		with open(fname, "w") as f:
 			if on:
+				print "wrote ON"
 				f.write(ON)
 			else:
+				print "wrote OFF"
 				f.write(OFF)
 	else:
 		raise ValueError("Pin must be between 0 and 23 (inclusive)")
