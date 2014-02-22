@@ -122,6 +122,25 @@ Also, comment out all wiimu.com lines with the # character
     ssh-keygen
 
 
+## Put the new public key on github
+
+Instructions forthcoming. For now, email `dane.t.larsen@gmail.com`
+
+
+## Clone the SPOT repository
+
+    cd
+    git clone git@github.com:larsendt/xhab-spot.git
+
+
+## Add the IP reporting crontab
+
+    crontab -e
+
+Then add the following line (you'll need to know vim)
+
+    * * * * * /home/xhab/xhab-spot/cron_scripts/publish_ip.py
+
 ## Things to install
 
 Add more here as needed
@@ -130,5 +149,7 @@ Add more here as needed
 * vim
 * ros-groovy-ros-base
 * python-smbus
+* python-netifaces
+* python-requests
 * iTunes (just kidding! -MP)
 
