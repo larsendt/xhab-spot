@@ -18,6 +18,7 @@ if len(sys.argv) == 3:
 		print "Pin must be between 0 and 23"
 		sys.exit(1)
 	spot_gpio.set_pin_mode(pin, spot_gpio.WRITE)	
+	print "Reading from %s" % spot_gpio.pin_path(pin)
 	while True:
 		print spot_gpio.get_pin(pin)
 		time.sleep(0.5)
@@ -42,6 +43,7 @@ elif len(sys.argv) == 4:
 		print "Value must be 0 or 1"
 		sys.exit(1)
 
+	print "Writing %s to %s" % (value, spot_gpio.pin_path(pin))
 	spot_gpio.set_pin_mode(pin, spot_gpio.READ)
 	spot_gpio.set_pin(pin, value)
 
