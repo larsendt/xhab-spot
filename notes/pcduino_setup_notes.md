@@ -149,5 +149,7 @@ Add more here as needed
 * vim
 * ros-groovy-ros-base
 * python-smbus
+* python-netifaces
+* python-requests
 * iTunes (just kidding! -MP)
 
