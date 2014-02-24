@@ -151,5 +151,11 @@ Add more here as needed
 * python-smbus
 * python-netifaces
 * python-requests
+* python-setuptools
 * iTunes (just kidding! -MP)
+
+also run these
+	
+    sudo easy_install pip
+    sudo pip install pyzmq
 
