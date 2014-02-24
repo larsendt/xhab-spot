@@ -13,5 +13,10 @@ mkdir -p $LOG_DIR
 echo 'roscore...'
 roscore &> $ROSCORE_LOG &
 echo 'Launched roscore'
+sleep 5
+
+echo 'Practicing running the listener node...'
+./listener.py &
+echo 'possibly launched?'
 
 
