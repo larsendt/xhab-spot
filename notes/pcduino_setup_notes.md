@@ -152,6 +152,7 @@ Add more here as needed
 * python-netifaces
 * python-requests
 * python-setuptools
+* python-psutil
 * iTunes (just kidding! -MP)
 
 also run these

@@ -6,7 +6,7 @@ then
 	exit 1
 fi
 
-PACKAGES="vim git python-netifaces python-requests python-smbus python-setuptools libzmq-dev"
+PACKAGES="vim git python-netifaces python-requests python-smbus python-setuptools python-psutil libzmq-dev"
 
 echo "Installing the following packages:"
 echo $PACKAGES
