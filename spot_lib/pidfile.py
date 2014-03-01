@@ -35,7 +35,7 @@ def get_pids(active):
             proc = psutil.Process(obj["pid"])
             if active:
                 pids.append((obj["pid"], obj["name"]))
-        except NoSuchProcess:
+        except psutil.NoSuchProcess:
             if not active:
                 pids.append((obj["pid"], obj["name"]))
 
@@ -56,5 +56,7 @@ def get_pidinfo(class_name, pid):
         return None
 
 
-
+def cleanup_dead_pids():
+    for fname in get_pids(False):
+        os.remove(fname)
 
