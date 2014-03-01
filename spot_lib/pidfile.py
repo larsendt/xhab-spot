@@ -56,6 +56,12 @@ def get_pidinfo(class_name, pid):
         return None
 
 
+def cleanup_self(class_name):
+    fname = pid_filename(class_name, os.getpid())
+    if os.path.exists(fname):
+        os.remove(fname)
+
+
 def cleanup_dead_pids():
     for fname in get_pids(False):
         os.remove(fname)
