@@ -4,7 +4,7 @@ project(xhab_spot)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS rospy std_msgs)
+find_package(catkin REQUIRED COMPONENTS rospy std_msgs message_generation)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -20,11 +20,34 @@ find_package(catkin REQUIRED COMPONENTS rospy std_msgs)
 #######################################
 
 ## Generate messages in the 'msg' folder
-# add_message_files(
-#   FILES
-#   Message1.msg
-#   Message2.msg
-# )
+add_message_files(
+  FILES
+  Alert.msg
+  BatteryStatus.msg
+  BatteryTask.msg
+  CameraPicture.msg
+  CameraTask.msg
+  CurtainStatus.msg
+  CurtainTask.msg
+  DisablePumpTask.msg
+  ECReading.msg
+  ECTask.msg
+  FanStatus.msg
+  FanTask.msg
+  LightsStatus.msg
+  LightsTask.msg
+  PHReading.msg
+  PHTask.msg
+  PumpStatus.msg
+  PumpTask.msg
+  RotationReading.msg
+  RotationTask.msg
+  Scheduler.msg
+  TemperatureReading.msg
+  TemperatureTask.msg
+  WaterLevelReading.msg
+  WaterLevelTask.msg
+)
 
 ## Generate services in the 'srv' folder
 # add_service_files(
@@ -34,10 +57,10 @@ find_package(catkin REQUIRED COMPONENTS rospy std_msgs)
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs
-# )
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -50,7 +73,7 @@ find_package(catkin REQUIRED COMPONENTS rospy std_msgs)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES xhab_spot
-#  CATKIN_DEPENDS rospy std_msgs
+  CATKIN_DEPENDS rospy std_msgs message_runtime
 #  DEPENDS system_lib
 )
 
