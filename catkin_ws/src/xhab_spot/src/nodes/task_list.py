@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import time
+import spot_node
 from std_msgs.msg import String
 
 class Task(object):
@@ -15,8 +16,9 @@ class Task(object):
         return (self.name == other.name) and (self.time == other.time)
 
 
-class TaskList(object):
+class TaskList(spot_node.SPOTNode):
     def __init__(self):
+        super(TaskList, self).__init__()
         self.pub = rospy.Publisher("spot_tasks", String)
         self.sub = rospy.Subscriber("scheduled_tasks", String, self.schedule_callback)
         rospy.init_node("TaskList")
@@ -62,4 +64,9 @@ if __name__ == "__main__":
         t.spin()
     except rospy.ROSInterruptException:
         pass
-            
+    finally:
+        print "cleanup!"
+        t.cleanup() 
+
+
+

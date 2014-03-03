@@ -1,0 +1,2 @@
+This is where non-ROS library utilites should go. If it uses ROS libs, it
+should go in the catkin workspace. The PYTHONPATH should contain this location.
