@@ -3,6 +3,7 @@
 ## Conventions
 
 * always lower case, even with things like pH (would be ph)
+* use underscores instead of spaces
 
 ## Topic format
 
@@ -31,6 +32,7 @@ Dane know, or add it yourself.
     /data/spotX/curtain
     /data/spotX/ec
     /data/spotX/fan
+    /data/spoyX/humidity
     /data/spotX/lights
     /data/spotX/ph
     /data/spotX/pump
@@ -45,11 +47,12 @@ For the task topics:
     /tasks/spotX/curtain
     /tasks/spotX/ec
     /tasks/spotX/fan
+    /tasks/spotX/humidity
     /tasks/spotX/lights
     /tasks/spotX/ph
     /tasks/spotX/pump
     /tasks/spotX/rotation
-    /tasks/spotX/scheduled
+    /tasks/spotX/scheduler
     /tasks/spotX/temperature
     /tasks/spotX/water
 
@@ -64,3 +67,10 @@ The messages can be found in the `xhab-spot` repo under:
 
     catkin_ws/src/xhab_spot/msg/
 
+There are three message types, each corresponding to a top-level topic:
+
+    Alerts.msg
+    Data.msg
+    Tasks.msg
+
+Each contains all necessary fields for every sensor/task/alert
