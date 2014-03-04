@@ -4,6 +4,9 @@ string type
 # possible values for spot_id: spot1, spot2, spot3, spot4
 string spot_id
 
+# timestamp!
+time timestamp
+
 # if type == 'curtain'
 bool curtain_open
 

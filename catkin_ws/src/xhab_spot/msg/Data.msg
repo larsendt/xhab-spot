@@ -1,5 +1,10 @@
 # type can be one of: battery, camera, curtain, ec, fan, humidity, lights, ph, pump, rotation, temperature, water
 string type
+
+# possible values for spot_id: spot1, spot2, spot3, spot4
+string spot_id
+
+# timestamp!
 time timestamp
 
 # if type == 'battery'
