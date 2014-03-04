@@ -22,31 +22,9 @@ find_package(catkin REQUIRED COMPONENTS rospy std_msgs message_generation)
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Alert.msg
-  BatteryStatus.msg
-  BatteryTask.msg
-  CameraPicture.msg
-  CameraTask.msg
-  CurtainStatus.msg
-  CurtainTask.msg
-  DisablePumpTask.msg
-  ECReading.msg
-  ECTask.msg
-  FanStatus.msg
-  FanTask.msg
-  LightsStatus.msg
-  LightsTask.msg
-  PHReading.msg
-  PHTask.msg
-  PumpStatus.msg
-  PumpTask.msg
-  RotationReading.msg
-  RotationTask.msg
-  Scheduler.msg
-  TemperatureReading.msg
-  TemperatureTask.msg
-  WaterLevelReading.msg
-  WaterLevelTask.msg
+  Alerts.msg
+  Data.msg
+  Tasks.msg
 )
 
 ## Generate services in the 'srv' folder
