@@ -52,7 +52,6 @@ For the task topics:
     /tasks/spotX/ph
     /tasks/spotX/pump
     /tasks/spotX/rotation
-    /tasks/spotX/scheduler
     /tasks/spotX/temperature
     /tasks/spotX/water
 
