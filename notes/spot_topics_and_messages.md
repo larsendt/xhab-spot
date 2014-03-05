@@ -67,10 +67,3 @@ The messages can be found in the `xhab-spot` repo under:
 
     catkin_ws/src/xhab_spot/msg/
 
-There are three message types, each corresponding to a top-level topic:
-
-    Alerts.msg
-    Data.msg
-    Tasks.msg
-
-Each contains all necessary fields for every sensor/task/alert
