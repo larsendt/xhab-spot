@@ -22,9 +22,9 @@ find_package(catkin REQUIRED COMPONENTS rospy std_msgs message_generation)
 ## Generate messages in the 'msg' folder
 add_message_files(
   FILES
-  Alerts.msg
+  Alert.msg
   Data.msg
-  Tasks.msg
+  Task.msg
 )
 
 ## Generate services in the 'srv' folder
