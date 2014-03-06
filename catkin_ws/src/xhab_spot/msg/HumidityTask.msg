@@ -1,3 +1,3 @@
 string spot_id
-string target = battery
+string target = humidity
 time timestamp

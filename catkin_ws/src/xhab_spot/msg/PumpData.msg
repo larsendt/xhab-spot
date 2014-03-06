@@ -1,3 +1,4 @@
 string spot_id
-string target = battery
+string target = pump
 time timestamp
+bool on
