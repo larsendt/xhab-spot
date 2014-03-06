@@ -2,7 +2,7 @@
 
 def get_spot_name():
     with open("/etc/hostname", "r") as f:
-        hostname = f.read().replace("\n", "")
+        hostname = f.read().replace("\n", "").replace("-", "")
     return hostname
 
 if __name__ == "__main__":
