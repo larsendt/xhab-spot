@@ -1,54 +1,43 @@
 #!/usr/bin/env python
 import rospy
 import time
+import datetime
 import spot_node
-from std_msgs.msg import String
+from xhab_spot.msg import *
+import identity
 
-class Task(object):
-    def __init__(self, name, start_time):        
-        self.name = name
-        self.time = start_time
 
-    def __hash__(self):
-        return hash(self.name + "::" + str(self.time))
-
-    def __eq__(self, other):
-        return (self.name == other.name) and (self.time == other.time)
+TASKS = ["lights"]
+_last_scheduled = {"lights":0}
+_frequency = {"lights":15}
+def should_schedule(name, curtime):
+    if int(curtime) - _last_scheduled[name] > _frequency[name]:
+        _last_scheduled[name] = curtime
+        return True
+    else:
+        return False
 
 
 class TaskList(spot_node.SPOTNode):
     def __init__(self):
         super(TaskList, self).__init__()
-        self.pub = rospy.Publisher("spot_tasks", String)
-        self.sub = rospy.Subscriber("scheduled_tasks", String, self.schedule_callback)
+        pub_topic = "/tasks/" + identity.get_spot_name()
+        self.pub = rospy.Publisher(pub_topic, Task)
         rospy.init_node("TaskList")
-        self.tasks = set()
-
-    def schedule_callback(self, data):
-        print "got a task from the scheduler:", data.data
-        t = Task(data.data, time.time() + 15)
-        self.tasks.add(t)
 
     def maybe_broadcast_task(self):
-        if not self.tasks:
-            print "No tasks to schedule at", time.time()
-            return
-        else:
-            print "%d tasks in the queue" % len(self.tasks)
+        now = int(time.time())
+        for task in TASKS:
+            if should_schedule(task, now):
+                if task == "lights":
+                    msg = LightsTask()
+                    msg.spot_id = identity.get_spot_name()
+                    msg.timestamp = rospy.Time.now()
+                    msg.brightness = 1.0
+                    msg.whites_on = True
+                    msg.reds_on = True
+                    self.pub.publish(msg)
 
-        ready_tasks = set()
-        for task in self.tasks:
-            now = time.time()
-            if now > task.time:
-                ready_tasks.add(task)
-                print "Task '%s' is ready" % task.name
-            else:
-                print "Task '%s' is not due for another %.1f seconds" % (task.name, task.time - now)
-
-        for task in ready_tasks:
-            self.pub.publish(String("task: " + task.name))
-            self.tasks.remove(task)
-            print "Published task '%s'" % task.name
 
     def spin(self):
         while not rospy.is_shutdown():
@@ -59,8 +48,8 @@ class TaskList(spot_node.SPOTNode):
                 
 
 if __name__ == "__main__":
+    t = TaskList()
     try:
-        t = TaskList()
         t.spin()
     except rospy.ROSInterruptException:
         pass
