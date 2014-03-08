@@ -43,8 +43,8 @@ int main(void)
   tcflush(serialPort, TCIOFLUSH);
 
   // Set the input and output baud rates
-  cfsetispeed(&portOptions, B115200);
-  cfsetospeed(&portOptions, B115200);
+  cfsetispeed(&portOptions, B38400);
+  cfsetospeed(&portOptions, B38400);
 
   // c_cflag contains a few important things- CLOCAL and CREAD, to prevent
   //   this program from "owning" the port and to enable receipt of data.

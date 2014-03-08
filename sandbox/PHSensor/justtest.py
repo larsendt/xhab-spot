@@ -11,7 +11,6 @@ x = myPort.read(10)
 
 ## Echo the data to the command prompt
 print "You entered " + x
-
 ## Close the port so other applications can use it.
 myPort.close()
 
