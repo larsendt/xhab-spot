@@ -1,5 +1,4 @@
 string source
 string property
 time timestamp
-string encoding = JPG
-uint8[] photo_data
+float32 value

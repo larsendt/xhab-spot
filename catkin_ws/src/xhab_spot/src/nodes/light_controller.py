@@ -4,26 +4,46 @@ import sys
 sys.path.append("/home/xhab/xhab-spot/sensor_scripts")
 import spot_gpio
 import rospy
-from std_msgs.msg import String
+from xhab_spot.msg import *
+import identity
 
 class LightController(object):
     def __init__(self):
-        print "init LightController"
+        print "LightController init"
         rospy.init_node("LightController")
-        self.pub = rospy.Publisher("sensor_data", String)
-        self.sub = rospy.Subscriber("spot_tasks", String, self.callback)
+        subtopic = "/tasks/" + identity.get_spot_name() + "/lights"
+        pubtopic = "/data/" + identity.get_spot_name() + "/lights"
+        print subtopic
+        self.pub = rospy.Publisher(pubtopic, Data)
+        self.sub = rospy.Subscriber(subtopic, LightsTask, self.callback)
 
-    def callback(self, data):
-        if data.data == "task: lights off":
-            print "Lights off"
-            spot_gpio.set_pin(8, False)
-            self.pub.publish(String("lights off"))
-        elif data.data == "task: lights on":
-            print "Lights on"
-            spot_gpio.set_pin(8, True)
-            self.pub.publish(String("lights on"))
-        else:
-            print "Bad data: '%s'" % data.data
+    def callback(self, msg):
+        print "got msg, target =", msg.target
+        print msg
+
+        pubmsg = Data()
+        pubmsg.source = identity.get_spot_name()
+        pubmsg.property = "lights_brightness"
+        pubmsg.timestamp = rospy.Time.now()
+        pubmsg.value = msg.brightness
+        self.pub.publish(pubmsg)
+
+        pubmsg = Data()
+        pubmsg.source = identity.get_spot_name()
+        pubmsg.property = "lights_whites_on"
+        pubmsg.timestamp = rospy.Time.now()
+        pubmsg.value = 1.0 if msg.whites_on else 0.0
+        self.pub.publish(pubmsg)
+
+        pubmsg = Data()
+        pubmsg.source = identity.get_spot_name()
+        pubmsg.property = "lights_reds_on"
+        pubmsg.timestamp = rospy.Time.now()
+        pubmsg.value = 1.0 if msg.reds_on else 0.0
+        self.pub.publish(pubmsg)
+
+        print "published three messages"
+
 
     def spin(self):
         print "LightController listening"

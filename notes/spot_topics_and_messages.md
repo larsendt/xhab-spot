@@ -66,3 +66,35 @@ The messages can be found in the `xhab-spot` repo under:
 
     catkin_ws/src/xhab_spot/msg/
 
+There are Task messages for each task topic, but Data and Alerts only have one message each (with the exception of CameraData.msg):
+
+Data.msg looks like the following:
+
+    string source
+    string property
+    time timestamp
+    float32 value
+
+`source` is one of `spot1`, `spot2`, `spot3`, `spot4` or `rogr`
+For `value`, booleans should be stored as 1.0 and 0.0
+`property` can be one of the following (again, if any are missing, feel free to add them)
+
+    battery_charging
+    battery_level
+    curtain_open
+    ec_reading
+    fan_on
+    humidity_reading
+    lights_brightness
+    lights_whites_on
+    lights_reds_on
+    ph_reading
+    pump_on
+    rotation_angle
+    temperature_reading
+    water_level
+
+Note that camera is missing from this list. It has its own message: CameraData.msg
+
+
+
