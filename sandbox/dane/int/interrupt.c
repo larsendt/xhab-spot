@@ -53,9 +53,9 @@ int main(int _argc, char **_argv) {
     FILE *pin3;
     FILE *pin4;
     FILE *pin5;
-    char *val3;
-    char *val4;
-    char *val5;
+    char val3[1];
+    char val4[1];
+    char val5[1];
 
     /////////////////////////////////////////////////////
     //                    Set Modes
@@ -124,8 +124,11 @@ int main(int _argc, char **_argv) {
         fread(val3, 1, 1, pin3); 
         fread(val4, 1, 1, pin4); 
         fread(val5, 1, 1, pin5); 
+        fseek(pin3, 0, SEEK_SET);
+        fseek(pin4, 0, SEEK_SET);
+        fseek(pin5, 0, SEEK_SET);
 
-        printf("read values %c %c %c\n", *val3, *val4, *val5);
+        printf("read values '%c' '%c' '%c'\n", *val3, *val4, *val5);
         
         datafile = fopen(DATA_FNAME, "w");
         if(datafile == NULL) {
