@@ -179,6 +179,7 @@ int main(int _argc, char **_argv) {
  
     // Loop forever. Print out the counter when the ISR has been called.        
     int oldValue = 0;        
+    printf("interrupt listening for values\n");
     while (1) {        
     }        
 }
