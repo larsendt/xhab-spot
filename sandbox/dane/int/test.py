@@ -3,14 +3,12 @@
 import json
 import sys
 import time
-sys.path.append("/home/xhab/xhab-spot/spot_lib/")
-import spot_gpio
 
-pval3 = spot_gpio.get_pin_pullup(3)
-pval4 = spot_gpio.get_pin_pullup(4)
-pval5 = spot_gpio.get_pin_pullup(5)
+pin3 = sys.argv[1]
+pin4 = sys.argv[2]
+pin5 = sys.argv[3]
+
+obj = {"pin3":pin3, "pin4":pin4, "pin5":pin5, "time":time.time()}
+
 with open("test.json", "w") as f:
-    obj = {"3val":pval3, "4val":pval4, "5val":pval5, "time":time.time()}
     json.dump(obj, f, indent=2)
-
-

@@ -31,6 +31,8 @@ static const char *swirq_dev = "/dev/swirq";
 #define SWIRQ_PIN1        (0x0)     
 #define SWIRQ_PIN2        (0x1)
 
+#define PYSCRIPT "./test.py"
+
 #define MPIN3 "/sys/devices/virtual/misc/gpio/mode/gpio3"
 #define MPIN4 "/sys/devices/virtual/misc/gpio/mode/gpio4"
 #define MPIN5 "/sys/devices/virtual/misc/gpio/mode/gpio5"
@@ -38,8 +40,6 @@ static const char *swirq_dev = "/dev/swirq";
 #define PIN3 "/sys/devices/virtual/misc/gpio/pin/gpio3"
 #define PIN4 "/sys/devices/virtual/misc/gpio/pin/gpio4"
 #define PIN5 "/sys/devices/virtual/misc/gpio/pin/gpio5"
-
-#define DATA_FNAME "/home/xhab/buttons.txt"
 
 int main(int _argc, char **_argv) {     
     int fd;        
@@ -53,9 +53,15 @@ int main(int _argc, char **_argv) {
     FILE *pin3;
     FILE *pin4;
     FILE *pin5;
-    char val3[1];
-    char val4[1];
-    char val5[1];
+    char val3[2];
+    char val4[2];
+    char val5[2];
+    int read_counter = 0;
+
+    val3[1] = 0;
+    val4[1] = 0;
+    val5[1] = 0;
+
 
     /////////////////////////////////////////////////////
     //                    Set Modes
@@ -66,7 +72,7 @@ int main(int _argc, char **_argv) {
         return 1;
     }
 
-    fwrite("1", sizeof(char), sizeof("1"), mpin3);
+    fwrite("8", sizeof(char), sizeof("1"), mpin3);
     fclose(mpin3);
 
     mpin4 = fopen(MPIN4, "w");
@@ -75,7 +81,7 @@ int main(int _argc, char **_argv) {
         return 1;
     }
 
-    fwrite("1", sizeof(char), sizeof("1"), mpin4);
+    fwrite("8", sizeof(char), sizeof("1"), mpin4);
     fclose(mpin4);
 
     mpin5 = fopen(MPIN5, "w");
@@ -84,60 +90,55 @@ int main(int _argc, char **_argv) {
         return 1;
     }
 
-    fwrite("1", sizeof(char), sizeof("1"), mpin5);
+    fwrite("8", sizeof(char), sizeof("1"), mpin5);
     fclose(mpin5);
-
-    /////////////////////////////////////////////////////
-    //                Open Pin Files 
-    /////////////////////////////////////////////////////
-    pin3 = fopen(PIN3, "r");
-    if(pin3 == NULL) {
-        printf("Failed to open pin file for gpio3\n");
-        return 1;
-    }
-
-    pin4 = fopen(PIN4, "r");
-    if(pin4 == NULL) {
-        printf("Failed to open pin file for gpio4\n");
-        return 1;
-    }
-    
-    pin5 = fopen(PIN5, "r");
-    if(pin5 == NULL) {
-        printf("Failed to open pin file for gpio5\n");
-        return 1;
-    }
 
     /////////////////////////////////////////////////////
     //             Set the interrupt func
     /////////////////////////////////////////////////////
     
-    datafile = fopen(DATA_FNAME, "w");
-    if(datafile == NULL) {
-        printf("datafile bad\n");
-        return 1;
-    }
-    fprintf(datafile, "asdf\n");
-    fclose(datafile);
-    
     int irqPin1Func (void) {        
-        fread(val3, 1, 1, pin3); 
-        fread(val4, 1, 1, pin4); 
-        fread(val5, 1, 1, pin5); 
-        fseek(pin3, 0, SEEK_SET);
-        fseek(pin4, 0, SEEK_SET);
-        fseek(pin5, 0, SEEK_SET);
-
-        printf("read values '%c' '%c' '%c'\n", *val3, *val4, *val5);
-        
-        datafile = fopen(DATA_FNAME, "w");
-        if(datafile == NULL) {
-            printf("interrupt handler failed to open datafile\n");
+        pin3 = fopen(PIN3, "r");
+        if(pin3 == NULL) {
+            printf("Failed to open pin file for gpio3\n");
             return 1;
         }
 
-        fprintf(datafile, "3: %c\n4: %c\n5: %c\n", *val3, *val4, *val5);
-        fclose(datafile);
+        pin4 = fopen(PIN4, "r");
+        if(pin4 == NULL) {
+            printf("Failed to open pin file for gpio4\n");
+            return 1;
+        }
+        
+        pin5 = fopen(PIN5, "r");
+        if(pin5 == NULL) {
+            printf("Failed to open pin file for gpio5\n");
+            return 1;
+        }
+
+        fread(val3, 1, 1, pin3); 
+        fread(val4, 1, 1, pin4); 
+        fread(val5, 1, 1, pin5); 
+
+        fclose(pin3);
+        fclose(pin4);
+        fclose(pin5);
+
+        read_counter += 1;
+
+        printf("(%d) read values '%c' '%c' '%c'\n", read_counter, *val3, *val4, *val5);
+        
+        int pid = fork();
+        char *pyargs[5];
+        pyargs[0] = PYSCRIPT;
+        pyargs[1] = val3;
+        pyargs[2] = val4;
+        pyargs[3] = val5;
+        pyargs[4] = NULL;
+        
+        if(pid == 0) {
+            execvp(PYSCRIPT, pyargs);
+        }
     }
  
     // Attach the ISR to the USR1 signal which is triggered by the OS when the interupt is signaled.     
