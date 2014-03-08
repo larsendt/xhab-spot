@@ -61,6 +61,14 @@ void setPin(int pinID, int state)
 }
 
 
+int getPin(int pinID)
+{
+  int value = -1;
+  lseek(pinID,0,SEEK_SET);
+  read(pinData[2],&value,1);
+  return value;
+}
+  
 //set and write functions for gpio pin
 
 void gpio_set(int pin_no,int mode)
@@ -85,4 +93,16 @@ void gpio_write(int pin_no,int state)
       setPin(fileid,state);
       close(fileid);
     }
+}
+
+void gpio_read(int pin_no)
+{
+  int fileid = openPin(pin_no);
+  int state = -1;
+  if(file_id > 0)
+    {
+      state =  getPin(fileid);
+      close(fileid);
+    }
+  return state;
 }
