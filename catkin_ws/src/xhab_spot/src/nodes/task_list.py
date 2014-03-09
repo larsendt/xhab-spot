@@ -8,8 +8,8 @@ import identity
 import spot_topics
 
 
-_last_scheduled = {"lights":0}
-_frequency = {"lights":15}
+_last_scheduled = {"lights":0, "ph":0}
+_frequency = {"lights":15, "ph":5}
 def should_schedule(name, curtime):
     if name not in _frequency:
         return False
@@ -24,6 +24,22 @@ def should_schedule(name, curtime):
         _last_scheduled[name] = curtime
         return True
 
+def lights_msg():
+    msg = LightsTask()
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    msg.brightness = 1.0
+    msg.whites_on = True
+    msg.reds_on = True
+    return msg
+
+def ph_msg():
+    msg = PHTask()
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
+MESSAGE_MAP = {"lights":lights_msg, "ph":ph_msg}
 
 class TaskList(spot_node.SPOTNode):
     def __init__(self):
@@ -38,16 +54,10 @@ class TaskList(spot_node.SPOTNode):
         now = int(time.time())
         for topic in spot_topics.TOPICS:
             if should_schedule(topic, now):
-                if topic == "lights":
-                    pub = self.publishers[topic]
-                    msg = LightsTask()
-                    msg.spot_id = identity.get_spot_name()
-                    msg.timestamp = rospy.Time.now()
-                    msg.brightness = 1.0
-                    msg.whites_on = True
-                    msg.reds_on = True
-                    pub.publish(msg)
-                    print "published lights"
+                msg = MESSAGE_MAP[topic]()
+                pub = self.publishers[topic]
+                pub.publish(msg)
+                print "published", topic
 
 
     def spin(self):

@@ -13,13 +13,11 @@ class LightController(object):
         rospy.init_node("LightController")
         subtopic = "/tasks/" + identity.get_spot_name() + "/lights"
         pubtopic = "/data/" + identity.get_spot_name() + "/lights"
-        print subtopic
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, LightsTask, self.callback)
 
     def callback(self, msg):
         print "got msg, target =", msg.target
-        print msg
 
         pubmsg = Data()
         pubmsg.source = identity.get_spot_name()
