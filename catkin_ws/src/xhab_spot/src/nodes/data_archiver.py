@@ -38,7 +38,7 @@ class DataArchiver(object):
         self.subscribers = spot_topics.make_data_subscribers(subtopic, self.data_callback) 
 
     def data_callback(self, message):
-        print "archiver got:", message 
+        print "archiver got:", message.source, message.property
         insert_data(message.source, message.property, message.timestamp, message.value)
         print "inserted data"
 
