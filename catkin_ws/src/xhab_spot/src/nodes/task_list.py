@@ -9,7 +9,7 @@ import spot_topics
 
 
 _last_scheduled = {}
-_frequency = {"lights":15, "ph":5, "battery":20}
+_frequency = {"lights":15, "ph":5, "ec":7, "battery":20}
 def should_schedule(name, curtime):
     if name not in _frequency:
         return False
@@ -39,13 +39,19 @@ def ph_msg():
     msg.timestamp = rospy.Time.now()
     return msg
 
+def ec_msg():
+    msg = ECTask()
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
 def battery_msg():
     msg = BatteryTask()
     msg.spot_id = identity.get_spot_name()
     msg.timestamp = rospy.Time.now()
     return msg
 
-MESSAGE_MAP = {"lights":lights_msg, "ph":ph_msg, "battery":battery_msg}
+MESSAGE_MAP = {"lights":lights_msg, "ph":ph_msg, "battery":battery_msg, "ec":ec_msg}
 
 class TaskList(spot_node.SPOTNode):
     def __init__(self):
