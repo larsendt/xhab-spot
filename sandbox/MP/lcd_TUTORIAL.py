@@ -16,10 +16,10 @@ import time
 # ...This ERASES the current line, and replaces it with a specified line.
 # Overflow is deleted.
 #
-# lcd_print_long_strong(str)
+# lcd_print_long_string(str)
 # ...This clears all, and prints a block of text. Overflow is deleted.
 #
-# lcd_cursor_placement(line, column)i
+# lcd_cursor_placement(line, column)
 # ...This moves the cursor to the desired line and column.
 #
 # Notes:

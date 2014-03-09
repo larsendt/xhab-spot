@@ -10,5 +10,5 @@ then
 	mv $BRC $BRC_BAK
 fi
 
-"Linking bashrc to $BRC"
+echo "Linking bashrc to $BRC"
 ln -s $CURDIR/bashrc $BRC

@@ -31,7 +31,7 @@ static const char *swirq_dev = "/dev/swirq";
 #define SWIRQ_PIN1        (0x0)     
 #define SWIRQ_PIN2        (0x1)
 
-#define PYSCRIPT "./test.py"
+#define PYSCRIPT "./test.py" // change this...
 
 #define MPIN3 "/sys/devices/virtual/misc/gpio/mode/gpio3"
 #define MPIN4 "/sys/devices/virtual/misc/gpio/mode/gpio4"
