@@ -1,27 +1,10 @@
 #include <fcntl.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <gpiodriver.h>
 
-#define GPIO_MODE_PATH "/sys/devices/virtual/misc/gpio/mode/" 
-#define GPIO_PIN_PATH  "/sys/devices/virtual/misc/gpio/pin/"
-#define GPIO_FILENAME "gpio"
-#define INPUT 0
-#define OUTPUT 1
-#define LOW 0
-#define HIGH 1
-
-int openPinMode(int pin_no);
-int openPin(int pin_no);
-void writeFile(int fileID,int value);
-void setPinMode(int pinID,int mode);
-void setPin(int pinID,int state);
-int getPin(int pinID);
-void gpio_set(int pin_no,int mode);
-void gpio_write(int pin_no,int state);
-int  gpio_read(int pin_no);
-
-/*
-int OpenPinMode(int pin_no)
+int openPinMode(int pin_no)
 {
   if(pin_no < 2 || pin_no > 17)
     return -2;
@@ -116,4 +99,3 @@ int gpio_read(int pin_no)
     }
   return state;
 }
-*/

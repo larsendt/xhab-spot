@@ -15,15 +15,18 @@
 
 #include <Python.h>
 #include "gpiodriver.h"
+
+#define MAXTIMINGS 100
+
 int readDHT(int pin, float *temp, float *hum)
 {
   int counter = 0;
-  int lastsate = HIGH;
+  int laststate = HIGH;
   int i = 0;
   int j = 0;
   int checksum = 0;
-  int bitidx = 0;
-  int bits[250];
+  //int bitidx = 0;
+  //int bits[250];
   int data[100];
 
   //set GPIO pin to output
@@ -46,14 +49,14 @@ int readDHT(int pin, float *temp, float *hum)
   //read data
   for(i = 0; i < MAXTIMINGS; i++){
     counter = 0;
-    while(gpio_read(pin) = laststate){
+    while(gpio_read(pin) == laststate){
       counter++;
       //nanosleep(1)
       if(counter == 1000)
 	break;
     }
     laststate = gpio_read(pin);
-    if(counter = 1000)break;
+    if(counter == 1000)break;
     
     if((i>3) && (i % 2 == 0)) {
       //shove each bit into the storage bytes
