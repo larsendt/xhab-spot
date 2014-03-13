@@ -141,6 +141,17 @@ Then add the following line (you'll need to know vim)
 
     * * * * * /home/xhab/xhab-spot/cron_scripts/publish_ip.py
 
+## Load appropriate kernel modules
+
+Look in /etc/modules, and make sure that `gpio`, `pwm`, and `adc` are in the
+file. If not, add them, one per line.
+
+For the changes to take effect, you will need to reboot, or run
+
+    sudo modprobe gpio
+    sudo modprobe pwm
+    sudo modprobe adc
+
 ## Things to install
 
 Add more here as needed
