@@ -43,4 +43,6 @@ while True:
     Temp = int(TVal)
     y = (0.0000060954 * pow(Temp,2)) + (0.00690983 * Temp) + 20.9983
     print "Temperature value : " + str(int(y)) + "F"
-
+    Temp1 = long(ECVal)
+    y1 = (0.0023 * pow(Temp1,2)) - (12.6 * Temp1) + 17520.1
+    print "EC value : " + str(int(y1)) + "microS/cm"
