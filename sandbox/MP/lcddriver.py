@@ -87,10 +87,17 @@ class lcd:
         self.lcd_write(LCD_RETURNHOME)
 
         sleep(0.02)
+        
+        self.lcd_print_string("                    ", 1)
+        self.lcd_print_string("                    ", 2)
+        self.lcd_print_string("                    ", 3)
+        self.lcd_print_string("                    ", 4)
+        
+        sleep(2)
 
         self.lcd_state("SPLASH")
 
-        sleep(2)
+        sleep(3)
         self.lcd_clear()
         sleep(.5)
 
@@ -115,28 +122,30 @@ class lcd:
                     self.lcd_state("SPOT_1")
                     self.lcd_cursor_move(2,19)
                     self.selection = 1
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("CTRL_1")
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
-                if self.selection == 3:
+                elif self.selection == 3:
                     self.lcd_print_string("      MESSAGES      ", 1)
-                    self.lcd_print_string("No msgs service at  ", 2)
-                    self.lcd_print_string("this time. Exiting..", 3)
-                    self.lcd_countdown(3)
+                    self.lcd_print_string("No message service  ", 2)
+                    self.lcd_print_string("at this time.       ", 3)
+                    self.lcd_print_string("Exiting..           ", 4)
+                    self.lcd_countdown_char(3)
                     self.lcd_state("HOME") # Go back
                     self.lcd_cursor_move(4, 19)
                     self.selection = 3
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_cursor_move(4, self.cursorCol)
                     self.selection = MAXHOMESELECT
                 else:
+                    print(self.cursorLine)
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -150,11 +159,11 @@ class lcd:
                     self.lcd_state("WATER_LEVEL") # Water Level (3 seconds)
                     self.lcd_state("SPOT_1")
                     self.lcd_cursor_move(2, 19)
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("BATTERY_LEVEL") # Battery Level (3 seconds)
                     self.lcd_state("SPOT_1")
                     self.lcd_cursor_move(3, 19)
-                if self.selection == 3:
+                elif self.selection == 3:
                     self.lcd_print_string("     PLANT INFO     ", 1)
                     self.lcd_print_string("No plant info at    ", 2)
                     self.lcd_print_string("this time. Exiting..", 3)
@@ -162,7 +171,7 @@ class lcd:
                     self.lcd_state("SPOT_1") # Plant Info. Screen
                     self.lcd_cursor_move(4, 19)
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("SPOT_3")
                     self.lcd_cursor_move(4, 19)
@@ -171,7 +180,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -186,16 +195,16 @@ class lcd:
                     self.lcd_state("EC") # EC Reading (3 seconds)
                     self.lcd_state("SPOT_2")
                     self.lcd_cursor_move(2, 19)
-                if self.selection == 5:
+                elif self.selection == 5:
                     self.lcd_state("PH") # pH Reading (3 seconds)
                     self.lcd_state("SPOT_2")
                     self.lcd_cursor_move(3, 19)
-                if self.selection == 6:
+                elif self.selection == 6:
                     self.lcd_state("HUMIDITY") # Humidity Level (3 seconds)
                     self.lcd_state("SPOT_2")
                     self.lcd_cursor_move(4, 19)
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("SPOT_1")
                     self.lcd_cursor_move(4, 19)
@@ -204,7 +213,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -219,16 +228,16 @@ class lcd:
                     self.lcd_state("WATER_TEMP") # Water Temp. (3 seconds)
                     self.lcd_state("SPOT_3")
                     self.lcd_cursor_move(2, 19)
-                if self.selection == 8:
+                elif self.selection == 8:
                     self.lcd_state("AIR_TEMP") # Air Temp. (3 seconds)
                     self.lcd_state("SPOT_3")
                     self.lcd_cursor_move(3, 19)
-                if self.selection == 9:
+                elif self.selection == 9:
                     self.lcd_state("HOME") # Go Back...
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("SPOT_2")
                     self.lcd_cursor_move(4, 19)
@@ -237,7 +246,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -252,25 +261,25 @@ class lcd:
                     self.lcd_state("ROTATE_PLANT") # Rotate Plant
                     self.lcd_cursor_move(1, 19)
                     self.selection = 1
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("DOOR") # Open/Close Door
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
-                if self.selection == 3:
+                elif self.selection == 3:
                     self.lcd_state("LIGHT_SETTINGS") # Light Settings
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
-                    self.lcd_state("CTRL_2")
-                    self.lcd_cursor_move(2, 19)
+                    self.lcd_state("CTRL_3")
+                    self.lcd_cursor_move(3, 19)
                     self.selection = MAXCTRLSELECT
                 else:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -285,16 +294,16 @@ class lcd:
                     self.lcd_state("TAKE_PICTURE") # Take Picture
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
-                if self.selection == 5:
+                elif self.selection == 5:
                     self.lcd_state("RESTART") # Restart
                     self.lcd_cursor_move(4, 19)
                     self.selection = 1
-                if self.selection == 6:
+                elif self.selection == 6:
                     self.lcd_state("SHUTDOWN") # Shutdown
                     self.lcd_cursor_move(4, 19)
                     self.selection = 1
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("CTRL_1")
                     self.lcd_cursor_move(4, 19)
@@ -303,7 +312,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -318,12 +327,12 @@ class lcd:
                     self.lcd_state("CALIBRATE_1") # Calibrate sensors
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
-                if self.selection == 8:
+                elif self.selection == 8:
                     self.lcd_state("HOME") # Go Back
-                    self.lcd_cursor_move(2, 19)
+                    self.lcd_cursor_move(3, 19)
                     self.selection = 2
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("CTRL_2")
                     self.lcd_cursor_move(4, 19)
@@ -332,7 +341,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 3:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -382,12 +391,13 @@ class lcd:
                     self.lcd_countdown(3)
                     self.lcd_state("ROTATE_PLANT")
                     self.lcd_cursor_move(self.selection, 19)
+                
                 elif self.selection == 4:
                     self.lcd_state("CTRL_1") # Go Back to CTRL_1
                     self.lcd_cursor_move(2, 19)
-                    self.selection = 1
+                    self.selection = 2
 
-            if L == 1:
+            elif L == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = self.selection - 1
@@ -395,7 +405,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -407,32 +417,43 @@ class lcd:
         if state == "DOOR":
             if M == 1:
                 if self.selection == 1:
+
+# Read from file that states whether door is open (1) or closed (0). Binary/Int.
+                    try:
+                        curtainStatus = 1 # 1 = currently opened. 0 == currently closed.
+                        pass
+                    except:
+                        pass
                     self.lcd_clear()
-                    self.lcd_print_string("     Opening...     ", 2)
+                    if curtainStatus == 1:
+                        self.lcd_print_string("     Closing...     ", 2)
+
+                    elif curtainStatus == 0:
+                        self.lcd_print_string("     Opening...     ", 2)
 # FIRST check if door is open. Then call ROS to open the door. How should I do this? (DO HERE!)
                     self.lcd_countdown(3)
                     self.lcd_state("CTRL_1")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
 
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("CTRL_1")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
 
-            if L == 1:
+            elif L == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
 
-            if R == 1:
+            elif R == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
 
@@ -442,16 +463,16 @@ class lcd:
                     self.lcd_state("VARY_BRIGHTNESS_1") # Vary Brightness
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("LED_ON_OFF_1") # Change LED on/off setting.
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
-                if self.selection == 3:
+                elif self.selection == 3:
                     self.lcd_state("CTRL_1") # GO BACK
                     self.lcd_cursor_move(4, 19)
                     self.selection = 3
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 3
@@ -459,7 +480,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -473,16 +494,16 @@ class lcd:
                     self.lcd_state("VARY_BRIGHTNESS") # Vary Brightness
                     self.lcd_state("VARY_BRIGHTNESS_1")
                     self.lcd_cursor_move(2, 19)
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("VARY_BRIGHTNESS")
                     self.lcd_state("VARY_BRIGHTNESS_1")
                     self.lcd_cursor_move(3, 19)
-                if self.selection == 2:
+                elif self.selection == 3:
                     self.lcd_state("VARY_BRIGHTNESS")
                     self.lcd_state("VARY_BRIGHTNESS_1")
                     self.lcd_cursor_move(4, 19)
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("VARY_BRIGHTNESS_4")
                     self.lcd_cursor_move(2, 19)
@@ -491,7 +512,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -506,16 +527,16 @@ class lcd:
                     self.lcd_state("VARY_BRIGHTNESS") # Vary Brightness
                     self.lcd_state("VARY_BRIGHTNESS_2")
                     self.lcd_cursor_move(2, 19)
-                if self.selection == 5:
+                elif self.selection == 5:
                     self.lcd_state("VARY_BRIGHTNESS")
                     self.lcd_state("VARY_BRIGHTNESS_2")
                     self.lcd_cursor_move(3, 19)
-                if self.selection == 6:
+                elif self.selection == 6:
                     self.lcd_state("VARY_BRIGHTNESS")
                     self.lcd_state("VARY_BRIGHTNESS_2")
                     self.lcd_cursor_move(4, 19)
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("VARY_BRIGHTNESS_1")
                     self.lcd_cursor_move(4, 19)
@@ -524,7 +545,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -539,16 +560,16 @@ class lcd:
                     self.lcd_state("VARY_BRIGHTNESS") # Vary Brightness
                     self.lcd_state("VARY_BRIGHTNESS_3")
                     self.lcd_cursor_move(2, 19)
-                if self.selection == 8:
+                elif self.selection == 8:
                     self.lcd_state("VARY_BRIGHTNESS")
                     self.lcd_state("VARY_BRIGHTNESS_3")
                     self.lcd_cursor_move(3, 19)
-                if self.selection == 9:
+                elif self.selection == 9:
                     self.lcd_state("VARY_BRIGHTNESS")
                     self.lcd_state("VARY_BRIGHTNESS_3")
                     self.lcd_cursor_move(4, 19)
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("VARY_BRIGHTNESS_2")
                     self.lcd_cursor_move(4, 19)
@@ -557,7 +578,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -573,12 +594,12 @@ class lcd:
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
 
-            if L == 1:
+            elif L == 1:
                 self.lcd_state("VARY_BRIGHTNESS_3")
                 self.lcd_cursor_move(4, 19)
                 self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 self.lcd_state("VARY_BRIGHTNESS_1")
                 self.lcd_cursor_move(2, 19)
                 self.selection = 1
@@ -590,18 +611,18 @@ class lcd:
                     self.lcd_state("LIGHT_SETTINGS")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("LED_ON_OFF")
                     self.lcd_state("LIGHT_SETTINGS")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
-                if self.selection == 3:
+                elif self.selection == 3:
                     self.lcd_state("LED_ON_OFF")
                     self.lcd_state("LIGHT_SETTINGS")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("LED_ON_OFF_3")
                     self.lcd_cursor_move(2, 19)
@@ -610,7 +631,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -627,18 +648,18 @@ class lcd:
                     self.lcd_state("LIGHT_SETTINGS")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
-                if self.selection == 5:
+                elif self.selection == 5:
                     self.lcd_state("LED_ON_OFF")
                     self.lcd_state("LIGHT_SETTINGS")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
-                if self.selection == 6:
+                elif self.selection == 6:
                     self.lcd_state("LED_ON_OFF")
                     self.lcd_state("LIGHT_SETTINGS")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("LED_ON_OFF_1")
                     self.lcd_cursor_move(4, 19)
@@ -647,7 +668,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -663,7 +684,7 @@ class lcd:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 2
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_state("LED_ON_OFF_2")
                     self.lcd_cursor_move(4, 19)
@@ -672,7 +693,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 2:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -694,24 +715,24 @@ class lcd:
                     self.lcd_cursor_move(2, 19)
                     self.selection = 4
 
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("CTRL_2")
                     self.lcd_cursor_move(2, 19)
                     self.selection = 4
 
-            if L == 1:
+            elif L == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
 
-            if R == 1:
+            elif R == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
 
@@ -724,24 +745,24 @@ class lcd:
                     import subprocess
                     subprocess.call(["shutdown", "-r", "now"])
 
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("CTRL_2")
                     self.lcd_cursor_move(3, 19)
                     self.selection = 5
 
-            if L == 1:
+            elif L == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
 
-            if R == 1:
+            elif R == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
 
@@ -754,24 +775,24 @@ class lcd:
                     import subprocess
                     subprocess.call(["shutdown", "-h", "now"])
 
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("CTRL_2")
                     self.lcd_cursor_move(4, 19)
                     self.selection = 6
 
-            if L == 1:
+            elif L == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
 
-            if R == 1:
+            elif R == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_cursor_move(3, 19)
                     self.selection = 1
 
@@ -782,16 +803,16 @@ class lcd:
                     self.lcd_state("EC_CALIB") # EC Calib
                     self.lcd_cursor_move(4, 19)
                     self.selection = 1
-                if self.selection == 2:
+                elif self.selection == 2:
                     self.lcd_state("PH_CALIB") # PH Calib
                     self.lcd_cursor_move(1, 19)
                     self.selection = 1
-                if self.selection == 3:
+                elif self.selection == 3:
                     self.lcd_state("CTRL_3") # GO BACK
                     self.lcd_cursor_move(2, 19)
                     self.selection = 7
 
-            if L == 1:
+            elif L == 1:
                 if self.cursorLine == 2:
                     self.lcd_cursor_move(4, 19)
                     self.selection = 3
@@ -799,7 +820,7 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
 
-            if R == 1:
+            elif R == 1:
                 if self.cursorLine != 4:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
@@ -813,12 +834,12 @@ class lcd:
                 self.lcd_cursor_move(2, 19)
                 self.selection = 1
 
-            if L == 1:
+            elif L == 1:
                 self.lcd_state("CALIBRATE_1") # GO BACK
                 self.lcd_cursor_move(2, 19)
                 self.selection = 1
 
-            if R == 1:
+            elif R == 1:
                 self.lcd_clear()
                 self.lcd_print_string("   Calibrating...  ", 2)
                 self.lcd_countdown(3)
@@ -838,30 +859,38 @@ class lcd:
         if state == "PH_CALIB":
             if M == 1:
                 if self.selection == 1:
+                    self.lcd_clear()
+                    self.lcd_print_string("   Calibrating...  ", 2)
+                    self.lcd_countdown(3)
 
 # Send Byte to pH Probe to calibrate using 4.0 pH soln.
-
+                    
                     self.lcd_state("CALIBRATE_1")
-                    self.lcd_cursor_move(2, 19)
+                    self.lcd_cursor_move(3, 19)
                     self.selection = 2
-                if self.selection == 2:
+                elif self.selection == 2:
+                    self.lcd_clear()
+                    self.lcd_print_string("   Calibrating...  ", 2)
+                    self.lcd_countdown(3)
 
 # Send Byte to pH Probe to calibrate using 7.0 pH soln.
 
                     self.lcd_state("CALIBRATE_1")
-                    self.lcd_cursor_move(2, 19)
+                    self.lcd_cursor_move(3, 19)
                     self.selection = 2
-                if self.selection == 3:
+                elif self.selection == 3:
+                    self.lcd_clear()
+                    self.lcd_print_string("   Calibrating...  ", 2)
+                    self.lcd_countdown(3)
 
 # Send Byte to pH Probe to calibrate using 10.0 pH soln.
 
-                    self.lcd_state("CALIBRATE_1") # GO BACK
-                    self.lcd_cursor_move(2, 19)
+                    self.lcd_state("CALIBRATE_1")
+                    self.lcd_cursor_move(3, 19)
                     self.selection = 2
-
-                if self.selection == 4:
+                elif self.selection == 4:
                     self.lcd_state("CALIBRATE_1") # GO BACK
-                    self.lcd_cursor_move(2, 19)
+                    self.lcd_cursor_move(3, 19)
                     self.selection = 2
 
             if L == 1:
@@ -891,7 +920,7 @@ class lcd:
             self.lcd_print_string("        NASA       ", 4)
 
         if state == "HOME":
-            self.lcd_print_string("       HOME         ", 1)
+            self.lcd_print_string("        HOME       ", 1)
             self.lcd_print_string("1. SPOT Info       ~", 2)
             self.lcd_print_string("2. Controls        ~", 3)
             self.lcd_print_string("3. Messages        ~", 4)
@@ -900,12 +929,12 @@ class lcd:
             self.lcd_print_string("     SPOT INFO      ", 1)
             self.lcd_print_string("1. Water Level     ~", 2)
             self.lcd_print_string("2. Battery Level   ~", 3)
-            self.lcd_print_string("3. Plant Info      ~", 2)
+            self.lcd_print_string("3. Plant Info      ~", 4)
 
         if state == "SPOT_2":
             self.lcd_print_string("     SPOT INFO      ", 1)
             self.lcd_print_string("4. EC Reading      ~", 2)
-            self.lcd_print_string("5. pH Reading      ~", 3)
+            self.lcd_print_string("5. PH Reading      ~", 3)
             self.lcd_print_string("6. Humidity Level  ~", 4)
 
         if state == "SPOT_3":
@@ -939,6 +968,7 @@ class lcd:
             self.lcd_print_string("                    ", 4)
 
         if state == "WATER_LEVEL":
+            self.lcd_clear()
 # Get water level reading form file. For now, assume int 0 to 4
             try:
                 waterLevel = 2
@@ -947,24 +977,25 @@ class lcd:
                 pass
             self.lcd_print_string("     WATER LEVEL    ", 1)
             if waterLevel == 0:
-                self.lcd_print_string("||                  ", 2)
-                self.lcd_print_string("      EMPTY!!!      ", 3)
-            if waterLevel == 1:
-                self.lcd_print_string("|||||               ", 2)
-                self.lcd_print_string("        LOW         ", 3)
-            if waterLevel == 2:
-                self.lcd_print_string("|||||||||           ", 2)
-                self.lcd_print_string("     HALF FULL      ", 3)
-            if waterLevel == 3:
-                self.lcd_print_string("|||||||||||||||     ", 2)
-                self.lcd_print_string("    ALMOST FULL     ", 3)
-            if waterLevel == 4:
-                self.lcd_print_string("||||||||||||||||||| ", 2)
-                self.lcd_print_string("       FULL!        ", 3)
+                self.lcd_print_string("||                  ", 3)
+                self.lcd_print_string("      EMPTY!!!      ", 4)
+            elif waterLevel == 1:
+                self.lcd_print_string("|||||               ", 3)
+                self.lcd_print_string("        LOW         ", 4)
+            elif waterLevel == 2:
+                self.lcd_print_string("||||||||||          ", 3)
+                self.lcd_print_string("     HALF FULL      ", 4)
+            elif waterLevel == 3:
+                self.lcd_print_string("|||||||||||||||     ", 3)
+                self.lcd_print_string("    ALMOST FULL     ", 4)
+            elif waterLevel == 4:
+                self.lcd_print_string("||||||||||||||||||| ", 3)
+                self.lcd_print_string("       FULL!        ", 4)
 
-            self.lcd_countdown(3)
+            self.lcd_countdown_char(3)
 
         if state == "BATTERY_LEVEL":
+            self.lcd_clear()
 # Get battery level reading from file. For now, assume 0 to 4.
             try:
                 batteryLevel = 2
@@ -973,22 +1004,22 @@ class lcd:
                 pass
             self.lcd_print_string("   BATTERY LEVEL    ", 1)
             if batteryLevel == 0:
-                self.lcd_print_string("||                  ", 2)
-                self.lcd_print_string("      EMPTY!!!      ", 3)
-            if batteryLevel == 1:
-                self.lcd_print_string("|||||               ", 2)
-                self.lcd_print_string("        LOW         ", 3)
-            if batteryLevel == 2:
-                self.lcd_print_string("|||||||||           ", 2)
-                self.lcd_print_string("     HALF FULL      ", 3)
-            if batteryLevel == 3:
-                self.lcd_print_string("|||||||||||||||     ", 2)
-                self.lcd_print_string("    ALMOST FULL     ", 3)
-            if batteryLevel == 4:
-                self.lcd_print_string("||||||||||||||||||| ", 2)
-                self.lcd_print_string("       FULL!        ", 3)
+                self.lcd_print_string("||                  ", 3)
+                self.lcd_print_string("      EMPTY!!!      ", 4)
+            elif batteryLevel == 1:
+                self.lcd_print_string("|||||               ", 3)
+                self.lcd_print_string("        LOW         ", 4)
+            elif batteryLevel == 2:
+                self.lcd_print_string("||||||||||          ", 3)
+                self.lcd_print_string("     HALF FULL      ", 4)
+            elif batteryLevel == 3:
+                self.lcd_print_string("|||||||||||||||     ", 3)
+                self.lcd_print_string("    ALMOST FULL     ", 4)
+            elif batteryLevel == 4:
+                self.lcd_print_string("||||||||||||||||||| ", 3)
+                self.lcd_print_string("       FULL!        ", 4)
 
-            self.lcd_countdown(3)
+            self.lcd_countdown_char(3)
 
         if state == "PLANT_INFO_1":
             self.lcd_print_string("     PLANT INFO     ", 1)
@@ -999,15 +1030,15 @@ class lcd:
         if state == "PLANT_INFO_2":
             self.lcd_print_string("     PLANT INFO     ", 1)
             self.lcd_print_string("4. Go Back         ~", 2)
-            self.lcd_print_string("                   ~", 3)
-            self.lcd_print_string("                   ~", 4)
+            self.lcd_print_string("                    ", 3)
+            self.lcd_print_string("                    ", 4)
 
         if state == "EC":
 # Get EC reading from file. For now, assume int 10 to 9999.
             try:
                 EC_reading = 4000 # in uS/cm
                 EC_reading_ms_cm = round(EC_reading/1000, 2) # in mS/cm
-                dispStr = "    " + str(EC_reading_ms_cm) + " mS/cm      "
+                dispStr = "     " + str(EC_reading_ms_cm) + " mS/cm     "
                 pass
             except:
                 pass
@@ -1020,11 +1051,11 @@ class lcd:
 # Get PH reading from file. For now, assume float with 2 point precision.
             try:
                 pH_reading = 7.00
-                dispStr = "      " + str(pH_reading) + " pH       "
+                dispStr = "       " + str(pH_reading) + " PH      "
                 pass
             except:
                 pass
-            self.lcd_print_string("     pH READING     ", 1)
+            self.lcd_print_string("     PH READING     ", 1)
             self.lcd_print_string("                    ", 2)
             self.lcd_print_string(dispStr, 3)
             self.lcd_countdown(3)
@@ -1053,14 +1084,15 @@ class lcd:
             except:
                 pass
             self.lcd_print_string("    WATER TEMP.     ", 1)
-            self.lcd_print_string(dispStrC, 2)
-            self.lcd_print_string(dispStrF, 3)
-            self.lcd_countdown(3)
+            self.lcd_print_string("                    ", 2)
+            self.lcd_print_string(dispStrC, 3)
+            self.lcd_print_string(dispStrF, 4)
+            self.lcd_countdown_char(3)
 
         if state == "AIR_TEMP":
 # Get air temp. reading from file. For now, assume int in celcius.
             try:
-                airTempC = 72
+                airTempC = 25
                 airTempF = int(9/5*airTempC + 32)
                 dispStrC = "     " + str(airTempC) + " deg. C      "
                 dispStrF = "     " + str(airTempF) + " deg. F      "
@@ -1068,15 +1100,16 @@ class lcd:
             except:
                 pass
             self.lcd_print_string("      AIR TEMP.     ", 1)
-            self.lcd_print_string(dispStrC, 2)
-            self.lcd_print_string(dispStrF, 3)
-            self.lcd_countdown(3)
+            self.lcd_print_string("                    ", 2)
+            self.lcd_print_string(dispStrC, 3)
+            self.lcd_print_string(dispStrF, 4)
+            self.lcd_countdown_char(3)
 
         if state == "ROTATE_PLANT":
             self.lcd_print_string("Rotate 90 deg. CW  ~", 1)
             self.lcd_print_string("Rotate 90 deg. CCW ~", 2)
             self.lcd_print_string("Rotate 180 deg.    ~", 3)
-            self.lcd_print_string("Go Back              ~", 4)
+            self.lcd_print_string("Go Back            ~", 4)
 
         if state == "DOOR":
 # Read from file that states whether door is open (1) or closed (0). Binary/Int.
@@ -1122,9 +1155,9 @@ class lcd:
                 brightnessTimeLimit = 30
                 if self.selection % 3 == 1:
                     brightnessTimeLimit = (brightnessTimeVector[0])
-                if self.selection % 3 == 2:
+                elif self.selection % 3 == 2:
                     brightnessTimeLimit = (brightnessTimeVector[1])
-                if self.selection % 3 == 0:
+                elif self.selection % 3 == 0:
                     brightnessTimeLimit = (brightnessTimeVector[2])
 # Set Brightness Level and Time Limit here.
 # Set LED OFF/ON State here as 1 (ON)
@@ -1200,9 +1233,9 @@ class lcd:
 
                 if self.selection % 3 == 1:
                     brightnessTimeLimit = (brightnessTimeVector[0])
-                if self.selection % 3 == 2:
+                elif self.selection % 3 == 2:
                     brightnessTimeLimit = (brightnessTimeVector[1])
-                if self.selection % 3 == 0:
+                elif self.selection % 3 == 0:
                     brightnessTimeLimit = (brightnessTimeVector[2])
 # WRITE to file that states LED OFF 0 or ON 1, and time for that brightness level. Set LED State and Time Limit here.
                 pass
@@ -1276,26 +1309,40 @@ class lcd:
             self.lcd_print_string("3. Go Back         ~", 4)
 
         if state == "EC_CALIB":
-            self.lcd_print_string("Place EC sensor in  ", 1)
-            self.lcd_print_string("62mS/cm soln. RIGHT ", 2)
-            self.lcd_print_string("button = calib; LEFT", 3)
-            self.lcd_print_string("button = cancel.    ", 4)
+
+
+            self.lcd_print_string("EC calibrating does ", 1)
+            self.lcd_print_string("not work at this    ", 2)
+            self.lcd_print_string("time. Exiting...    ", 3)
+            self.lcd_countdown(3)
+
+            #self.lcd_print_string("Place EC sensor in  ", 1)
+            #self.lcd_print_string("62mS/cm soln. RIGHT ", 2)
+            #self.lcd_print_string("button = calib; LEFT", 3)
+            #self.lcd_print_string("button = cancel.    ", 4)
 
         if state == "PH_CALIB":
-            self.lcd_print_string("Place pH sensor in  ", 1)
-            self.lcd_print_string("4.0, 7.0, or 10.0 pH", 2)
-            self.lcd_print_string("calibration solution", 3)
+            self.lcd_print_string("Place PH sensor in  ", 1)
+            self.lcd_print_string("4.0, 7.0, or 10.0 PH", 2)
+            self.lcd_print_string("calibration soln... ", 3)
 
             self.lcd_countdown(3)
 
-            self.lcd_print_string("1. 4 pH Solution   ~", 1)
-            self.lcd_print_string("2. 7 pH Solution   ~", 2)
-            self.lcd_print_string("3. 10 pH Solution  ~", 3)
+            self.lcd_print_string("1. 4 PH Solution   ~", 1)
+            self.lcd_print_string("2. 7 PH Solution   ~", 2)
+            self.lcd_print_string("3. 10 PH Solution  ~", 3)
             self.lcd_print_string("4. Go Back         ~", 4)
 
     # Clears line 4 and counts down using line 4
     def lcd_countdown(self, val):
         self.lcd_print_string("                    ", 4)
+        while val > 0:
+            self.lcd_print_char( str(val), 4, 18)
+            sleep(1)
+            val = val - 1
+
+    # Clears line 4 and counts down using line 4
+    def lcd_countdown_char(self, val):
         while val > 0:
             self.lcd_print_char( str(val), 4, 18)
             sleep(1)
@@ -1376,10 +1423,10 @@ class lcd:
 
     # This puts the cursor to a desired line and column
     def lcd_cursor_move(self, line, column):
-        if ((self.cursorLine)-1)*20+(self.cursorCol)>(line-1)*20+column:
-            self.lcd_write(LCD_RETURNHOME)
-            self.cursorCol = 0
-            self.cursorLine = 1
+        # if ((self.cursorLine)-1)*20+(self.cursorCol)>(line-1)*20+column:
+        self.lcd_write(LCD_RETURNHOME)
+        self.cursorCol = 0
+        self.cursorLine = 1
         if column > MAXCURSORPOS-1:
             column = MAXCURSORPOS-1
         if line > NUMLINES:
@@ -1392,10 +1439,10 @@ class lcd:
                 self.cursorCol = 0
                 if self.cursorLine == 1:
                     self.cursorLine = 3
-                elif self.cursorLine == 3:
-                    self.cursorLine = 2
                 elif self.cursorLine == 2:
                     self.cursorLine = 4
+                elif self.cursorLine == 3:
+                    self.cursorLine = 2
                 elif self.cursorLine == 4:
                     self.cursorLine = 1
 
