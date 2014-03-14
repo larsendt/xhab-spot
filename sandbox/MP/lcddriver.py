@@ -62,7 +62,7 @@ class lcd:
     #initializes objects and lcd
     def __init__(self):
         self.lcd_device = i2c_lib.i2c_device(ADDRESS)
-
+        
         self.lcd_backlight = LCD_BACKLIGHT
         self.lcd_display_status = LCD_DISPLAYON
         self.cursorCol = 0
@@ -88,10 +88,7 @@ class lcd:
 
         sleep(0.02)
         
-        self.lcd_print_string("                    ", 1)
-        self.lcd_print_string("                    ", 2)
-        self.lcd_print_string("                    ", 3)
-        self.lcd_print_string("                    ", 4)
+        self.lcd_clear()
         
         sleep(2)
 
@@ -106,6 +103,13 @@ class lcd:
 
     # State changing function
     def lcd_state_change(self, buttons):
+        
+        if self.lcd_backlight != LCD_BACKLIGHT:
+            self.lcd_on()
+
+# Save time of last button press in a file? That way the LCD screen can be turned off
+# after 30 seconds of inactivity?
+
         R = not buttons[0]
         M = not buttons[1]
         L = not buttons[2]
@@ -740,8 +744,10 @@ class lcd:
             if M == 1:
                 if self.selection == 1:
                     self.lcd_clear()
-                    self.lcd_print_string("  Shutting Down...  ", 2)
+                    self.lcd_print_string("    Restarting... ", 2)
                     self.lcd_countdown(3)
+                    self.lcd_clear()
+
                     import subprocess
                     subprocess.call(["shutdown", "-r", "now"])
 
@@ -772,6 +778,13 @@ class lcd:
                     self.lcd_clear()
                     self.lcd_print_string("  Shutting Down...  ", 2)
                     self.lcd_countdown(3)
+                    self.lcd_print_string("   Wall-E!!!!!!!!!  ", 1)
+                    self.lcd_print_string("                    ", 2)
+                    self.lcd_print_string("   SPOT created by  ", 3)
+                    self.lcd_print_string("  CU Boulder Grads. ", 4)
+                    sleep(3)
+                    self.lcd_clear()
+
                     import subprocess
                     subprocess.call(["shutdown", "-h", "now"])
 
@@ -1323,9 +1336,15 @@ class lcd:
 
         if state == "PH_CALIB":
             self.lcd_print_string("Place PH sensor in  ", 1)
-            self.lcd_print_string("4.0, 7.0, or 10.0 PH", 2)
+            self.lcd_print_string("7, 4, then 10 PH       ", 2)
             self.lcd_print_string("calibration soln... ", 3)
 
+            self.lcd_countdown(3)
+
+            self.lcd_print_string("See User Manual for ", 1)
+            self.lcd_print_string("additional calib.   ", 2)
+            self.lcd_print_string("instructions.", 3)
+            
             self.lcd_countdown(3)
 
             self.lcd_print_string("1. 4 PH Solution   ~", 1)
