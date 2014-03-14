@@ -5,20 +5,33 @@
 #define GPIO_MODE_PATH "/sys/devices/virtual/misc/gpio/mode/" 
 #define GPIO_PIN_PATH  "/sys/devices/virtual/misc/gpio/pin/"
 #define GPIO_FILENAME "gpio"
-#define INPUT 0
-#define OUTPUT 1
-#define LOW 0
-#define HIGH 1
+#define INPUT '0'
+#define OUTPUT '1'
+#define LOW '0'
+#define HIGH '1'
+
+
+#define DHT_ERROR_NONE 0
+#define DHT_BUS_HUNG 1
+#define DHT_ERROR_NOT_PRESENT 2
+#define DHT_ERROR_ACK_TOO_LONG 3
+#define DHT_ERROR_SYNC_TIMEOUT 4
+#define DHT_ERROR_DATA_TIMEOUT 5
+#define DHT_ERROR_CHECKSUM 6
+#define DHT_ERROR_TOOQUICK 7
+  
+
 
 int openPinMode(int pin_no);
 int openPin(int pin_no);
+void closePin(int fileid);
 void writeFile(int fileID,int value);
 void setPinMode(int pinID,int mode);
 void setPin(int pinID,int state);
-int getPin(int pinID);
+char getPin(int pinID);
 void gpio_set(int pin_no,int mode);
 void gpio_write(int pin_no,int state);
-int  gpio_read(int pin_no);
+char  gpio_read(int pin_no);
 
 /*
 int OpenPinMode(int pin_no)

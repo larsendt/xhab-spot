@@ -2,16 +2,16 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <gpiodriver.h>
+#include "gpiodriver.h"
 
 int openPinMode(int pin_no)
 {
-  if(pin_no < 2 || pin_no > 17)
+  if(pin_no < 0 || pin_no > 17)
     return -2;
   else
     {
-      char path[256] = {0};
-      //memset(path,0,sizeof(path));
+      char path[256];
+      memset(path,0,sizeof(path));
       sprintf(path,"%s%s%d",GPIO_MODE_PATH,GPIO_FILENAME,pin_no);
       return open(path,O_RDWR);
     }
@@ -19,11 +19,12 @@ int openPinMode(int pin_no)
 
 int openPin(int pin_no)
 {
-  if(pin_no < 2 || pin_no > 17)
+  if(pin_no < 0 || pin_no > 17)
     return -2;
   else
     {
-      char path[256]  = {0};
+      char path[256];
+      memset(path,0,sizeof(path));
       sprintf(path,"%s%s%d",GPIO_PIN_PATH,GPIO_FILENAME,pin_no);
       return open(path,O_RDWR);
     }
@@ -54,9 +55,9 @@ void setPin(int pinID, int state)
 }
 
 
-int getPin(int pinID)
+char getPin(int pinID)
 {
-  int value = -1;
+  char value = '1';
   lseek(pinID,0,SEEK_SET);
   read(pinID,&value,1);
   return value;
@@ -88,14 +89,19 @@ void gpio_write(int pin_no,int state)
     }
 }
 
-int gpio_read(int pin_no)
+char gpio_read(int pin_no)
 {
   int fileid = openPin(pin_no);
-  int state = -1;
+  char state = 'N';
   if(fileid > 0)
     {
       state =  getPin(fileid);
       close(fileid);
     }
   return state;
+}
+
+void closePin(int fileid)
+{
+  close(fileid);
 }
