@@ -9,42 +9,42 @@ import identity
 
 PUB_DELAY = 15
 
-class CurtainController(object):
+class DoorController(object):
     def __init__(self):
-        print "CurtainController init"
-        rospy.init_node("CurtainController")
-        subtopic = "/tasks/" + identity.get_spot_name() + "/curtain"
-        pubtopic = "/data/" + identity.get_spot_name() + "/curtain"
+        print "DoorController init"
+        rospy.init_node("DoorController")
+        subtopic = "/tasks/" + identity.get_spot_name() + "/door"
+        pubtopic = "/data/" + identity.get_spot_name() + "/door"
         self.pub = rospy.Publisher(pubtopic, Data)
-        self.sub = rospy.Subscriber(subtopic, CurtainTask, self.callback)
-        self.curtain_open = False
+        self.sub = rospy.Subscriber(subtopic, DoorTask, self.callback)
+        self.door_open = False
 
     def callback(self, msg):
         print "got msg, target =", msg.target
 
         if msg.open:
-            print "curtain open!"
-            self.curtain_open = True
+            print "door open!"
+            self.door_open = True
         else:
-            print "curtain closed!"
-            self.curtain_open = False
+            print "door closed!"
+            self.door_open = False
 
 
     def spin(self):
-        print "CurtainController listening"
+        print "DoorController listening"
         while not rospy.is_shutdown():
             msg = Data()
             msg.source = identity.get_spot_name()
             msg.timestamp = rospy.Time().now()
-            msg.property = "curtain_open"
-            msg.value = 1.0 if self.curtain_open else 0.0
+            msg.property = "door_open"
+            msg.value = 1.0 if self.door_open else 0.0
             self.pub.publish(msg)
-            print "Published curtain status:", msg.value
+            print "Published door status:", msg.value
             time.sleep(PUB_DELAY)
 
 if __name__ == "__main__":
     try:
-        c = CurtainController()
+        c = DoorController()
         c.spin()
     except rospy.ROSInterruptException:
         pass
