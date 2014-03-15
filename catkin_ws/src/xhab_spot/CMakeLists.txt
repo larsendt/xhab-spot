@@ -37,6 +37,7 @@ add_message_files(
   WaterTemperatureTask.msg
   AirTemperatureTask.msg
   WaterLevelTask.msg
+  ValveTask.msg
 )
 
 ## Generate services in the 'srv' folder
