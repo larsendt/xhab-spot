@@ -17,14 +17,19 @@
 #include <Python.h>
 #include "gpiodriver.h"
 
+//#define MAXTIMINGS 100
 #define DHT22_DATA_BIT_COUNT 41
 
 int readDHT(int pin, float *temp, float *hum)
 {
-
+  //int counter = 0;
+  //unsigned char laststate = HIGH;
   int i = 0;
+  //int j = 0;
   int checkSum = 0;
-  
+  //int bitidx = 0;
+  //int bits[250];
+  //int data[100];
   uint8_t bitTimes[DHT22_DATA_BIT_COUNT];
   uint16_t retryCount = 0;
   uint8_t _lastHumidity,currentHumidity = 0;
@@ -35,14 +40,18 @@ int readDHT(int pin, float *temp, float *hum)
   int  pinID = openPin(pin);
 
   
+
   //set GPIO pin to output
 
   setPinMode(modeID,OUTPUT);
   setPin(pinID,HIGH);
   //  printf("value %c \n", getPin(pinID));
+  //gpio_set(pin,OUTPUT);
+  
+  //gpio_write(pin, HIGH);
+  //  usleep(500000); //500 ms
+
   // printf(" value written after seting high  %c \n", getPin(pinID));
-
-
 
 // Pin needs to start HIGH, wait until it is HIGH with a timeout  
   retryCount = 0;
@@ -54,11 +63,13 @@ int readDHT(int pin, float *temp, float *hum)
 	}
       retryCount++;
       usleep(2);
+      //} while(gpio_read(pin) == LOW);
     }while(getPin(pinID) == LOW);
+  //gpio_write(pin, LOW);
   //usleep(200000);
 
   // Send the activate pulse
-  
+  //gpio_write(pin, LOW);
   setPin(pinID,LOW);
   usleep(10000); //1.1 ms
 
@@ -66,9 +77,14 @@ int readDHT(int pin, float *temp, float *hum)
    usleep(40);// host pulls up high to wait for ack pulse
   
   //printf(" value written after sending activate pulse %c \n", getPin(pinID));
- 
-   // Switch back to input so pin can float
+ // Switch back to input so pin can float
+  //gpio_set(pin,INPUT);
   setPinMode(modeID, INPUT);
+
+  //  data[0] = data[1] = data[2] = data[3] = data[4] = 0;
+  
+  //int pinID = openPin(pin);
+  
 
   // Find the start of the ACK Pulse
   retryCount = 0;
@@ -110,7 +126,16 @@ int readDHT(int pin, float *temp, float *hum)
     } while(getPin(pinID) == HIGH);
   //printf(" sensor pull up low for ack for rc : %d\n", retryCount);
 
- 
+  
+  /*//wait for pin to drop
+  //while(gpio_read(pin) == 1){
+  int k = 0;
+  while(getPin(pinID) == HIGH){  
+  usleep(1);
+  k++;
+  printf(" here, %d \n",  k);
+  }*/
+
   // Read the 40 bit data stream
   for(i = 0; i < DHT22_DATA_BIT_COUNT; i++)
     {
@@ -200,7 +225,67 @@ int readDHT(int pin, float *temp, float *hum)
 }
 
 
-/*python wrapper support functions*/ 
+
+  /*
+  //read data
+  for(i = 0; i < MAXTIMINGS; i++){
+    counter = 0;
+    //while(gpio_read(pin) == laststate){
+    while(getPin(pinID) == laststate){
+    counter++;
+      //nanosleep(1)
+    
+      if(counter == 1000)
+	{
+	  printf("i is %d, counter is %d value is %c\n", i, counter,getPin(pinID));
+	  break;
+	}
+    }
+    //laststate = gpio_read(pin);
+    laststate = getPin(pinID);
+    if(counter == 1000)break;
+#ifdef DEBUG
+    bits[bitidx++] = counter;
+#endif
+
+    if((i>3) && (i % 2 == 0)) {
+      //shove each bit into the storage bytes
+      data[j/8] <<= 1;
+      if(counter > 200)
+	data[j/8] |=1;
+      j++;
+    }
+  }
+
+
+#ifdef DEBUG
+  for (i=3; i<bitidx; i+=2) {
+    printf("bit %d: %d\n", i-3, bits[i]);
+    printf("bit %d: %d (%d)\n", i-2, bits[i+1], bits[i+1] > 200);
+  }
+  printf("Data (%d): 0x%x 0x%x 0x%x 0x%x 0x%x\n", j, data[0], data[1], data[2], data[3], data[4]);
+#endif
+
+  closePin(pinID);
+
+  if(j >=39){
+    checksum = (data[0] + data[1] + data[2] + data[3]) & 0xFF;
+    if(data[4] == checksum){
+      //checksum is valid
+      *temp = (data[2] & 0x7F) * 256 + data[3];
+      *temp /= 10.0;
+      if(data[2] & 0x80)
+	*temp *= -1;
+      *hum = data[0] * 256 + data[1];
+      *hum /= 10.0;
+      return 0; //correct data
+    }
+    return -2; //invalid checksum
+  }
+  return -1; //insufficient data
+}
+
+  */	       
 static PyObject *
 dhtsensor_read(PyObject *self, PyObject *args)
 {
