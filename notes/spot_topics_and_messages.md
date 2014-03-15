@@ -29,7 +29,7 @@ Dane know, or add it yourself.
 
     /data/spotX/battery
     /data/spotX/camera
-    /data/spotX/curtain
+    /data/spotX/door
     /data/spotX/ec
     /data/spotX/fan
     /data/spoyX/humidity
@@ -44,7 +44,7 @@ For the task topics:
 
     /tasks/spotX/battery
     /tasks/spotX/camera
-    /tasks/spotX/curtain
+    /tasks/spotX/door
     /tasks/spotX/ec
     /tasks/spotX/fan
     /tasks/spotX/humidity
@@ -52,8 +52,9 @@ For the task topics:
     /tasks/spotX/ph
     /tasks/spotX/pump
     /tasks/spotX/rotation
-    /tasks/spotX/temperature
-    /tasks/spotX/water
+    /tasks/spotX/air_temperature
+    /tasks/spotX/water_temperature
+    /tasks/spotX/water_level
 
 The alerts have not been completely defined yet, so this section may change.
     
@@ -82,7 +83,7 @@ For `value`, booleans should be stored as 1.0 and 0.0
     battery_charging
     battery_level
     battery_full
-    curtain_open
+    door_status
     ec_reading
     fan_on
     humidity_reading
@@ -92,7 +93,8 @@ For `value`, booleans should be stored as 1.0 and 0.0
     ph_reading
     pump_on
     rotation_angle
-    temperature_reading
+    air_temperature_reading
+    water_temperature_reading
     water_level
 
 Note that camera is missing from this list. It has its own message: CameraData.msg
