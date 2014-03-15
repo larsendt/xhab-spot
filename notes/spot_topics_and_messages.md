@@ -37,8 +37,9 @@ Dane know, or add it yourself.
     /data/spotX/ph
     /data/spotX/pump
     /data/spotX/rotation
-    /data/spotX/temperature
-    /data/spotX/water
+    /data/spotX/air_temperature
+    /data/spotX/water_temperature
+    /data/spotX/water_level
 
 For the task topics:
 
@@ -93,8 +94,8 @@ For `value`, booleans should be stored as 1.0 and 0.0
     ph_reading
     pump_on
     rotation_angle
-    air_temperature_reading
-    water_temperature_reading
+    air_temperature
+    water_temperature
     water_level
 
 Note that camera is missing from this list. It has its own message: CameraData.msg
