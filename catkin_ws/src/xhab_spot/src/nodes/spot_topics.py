@@ -12,6 +12,11 @@ DATA_MESSAGES = [Data]
 TOPICS = ["battery", "camera", "curtain", "ec", "fan", "humidity", "lights",
           "ph", "pump", "rotation", "temperature", "water"]
 
+PROPERTIES = ["battery_charging", "battery_level", "battery_full", "curtain_open", 
+              "ec_reading", "fan_on", "humidity_reading", "lights_brightness", 
+              "lights_whites_on", "lights_reds_on", "ph_reading", "pump_on", 
+              "rotation_angle", "temperature_reading", "water_level"]
+
 
 def make_task_publishers(base_topic):
     tt = zip(TOPICS, TASK_MESSAGES)
