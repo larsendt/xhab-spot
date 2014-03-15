@@ -40,6 +40,7 @@ Dane know, or add it yourself.
     /data/spotX/air_temperature
     /data/spotX/water_temperature
     /data/spotX/water_level
+    /data/spotX/valve
 
 For the task topics:
 
@@ -56,6 +57,7 @@ For the task topics:
     /tasks/spotX/air_temperature
     /tasks/spotX/water_temperature
     /tasks/spotX/water_level
+    /tasks/spotX/valve
 
 The alerts have not been completely defined yet, so this section may change.
     
@@ -97,6 +99,7 @@ For `value`, booleans should be stored as 1.0 and 0.0
     air_temperature
     water_temperature
     water_level
+    valve_status
 
 Note that camera is missing from this list. It has its own message: CameraData.msg
 

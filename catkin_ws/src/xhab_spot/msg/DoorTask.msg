@@ -1,4 +1,4 @@
 string spot_id
-string target = curtain
+string target = door
 time timestamp
 bool open
