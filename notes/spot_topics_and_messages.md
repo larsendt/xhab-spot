@@ -81,6 +81,7 @@ For `value`, booleans should be stored as 1.0 and 0.0
 
     battery_charging
     battery_level
+    battery_full
     curtain_open
     ec_reading
     fan_on
