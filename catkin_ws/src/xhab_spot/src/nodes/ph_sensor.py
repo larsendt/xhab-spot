@@ -6,6 +6,7 @@ from xhab_spot.msg import *
 import identity
 import time
 import random
+import serial
 
 PUB_DELAY = 15
 
@@ -18,10 +19,20 @@ class PHSensor(object):
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, PHTask, self.callback)
         self.reading = 7.0
+        self.port = serial.Serial('/dev/ttyS1', 38400, bytesize=8, parity='N', stopbits=1, timeout = 10)
+        
 
     def callback(self, msg):
         print "got msg, target =", msg.target
-        self.reading = random.normalvariate(7, 1)
+        val = ""
+        for i in range(50):
+            inputchar = self.port.read()
+            if inputchar == "\r":
+                self.reading = float(val)
+                break
+            else:
+                ph += inputchar
+
         print "read pH value:", self.reading
 
     def spin(self):
