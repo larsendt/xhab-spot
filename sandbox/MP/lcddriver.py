@@ -107,21 +107,33 @@ class lcd:
     # State changing function
     def lcd_state_change(self, buttons):
         
-        if self.lcd_backlight != LCD_BACKLIGHT:
-            self.lcd_on()
-
-# Save time of last button press in a file? That way the LCD screen can be turned off
-# after 30 seconds of inactivity?
-
         R = not buttons[0]
         M = not buttons[1]
         L = not buttons[2]
-
-        # If we're turning the backlight on after it has been shut off, start back up at HOME.
-        if ((self.lcd_backlight) != LCD_BACKLIGHT):
-            self.state = "HOME"
-
-        state = self.state
+        
+        # If the button was pressed while the backlight was off, 
+        # start at HOME and assume no buttons were pressed.
+        if self.lcd_backlight != LCD_BACKLIGHT:
+            
+            self.lcd_on()
+            
+            self.lcd_state("HOME")
+            R = 0
+            M = 0
+            L = 0
+            
+            count = 20
+            okay = False
+            while not okay:
+                lcdON = PATH + "lcd_status.txt"
+            try:
+                with open(sensorPath, "w") as f:
+                    f.write("1")
+                okay = True
+            except:
+                count = count - 1
+            if count < 0:
+                okay = True
 
         
         # ********** HOME *********
