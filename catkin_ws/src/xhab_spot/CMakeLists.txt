@@ -25,7 +25,7 @@ add_message_files(
   Alert.msg
   BatteryTask.msg
   CameraTask.msg
-  CurtainTask.msg
+  DoorTask.msg
   Data.msg
   ECTask.msg
   FanTask.msg
@@ -34,8 +34,10 @@ add_message_files(
   PHTask.msg
   PumpTask.msg
   RotationTask.msg
-  TemperatureTask.msg
-  WaterTask.msg
+  WaterTemperatureTask.msg
+  AirTemperatureTask.msg
+  WaterLevelTask.msg
+  ValveTask.msg
 )
 
 ## Generate services in the 'srv' folder
