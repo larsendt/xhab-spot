@@ -1,5 +1,8 @@
 import i2c_lib
 from time import *
+import math
+
+PATH = "/home/xhab/data/"
 
 # LCD Address
 ADDRESS = 0x27
@@ -104,22 +107,38 @@ class lcd:
     # State changing function
     def lcd_state_change(self, buttons):
         
-        if self.lcd_backlight != LCD_BACKLIGHT:
-            self.lcd_on()
-
-# Save time of last button press in a file? That way the LCD screen can be turned off
-# after 30 seconds of inactivity?
-
         R = not buttons[0]
         M = not buttons[1]
         L = not buttons[2]
+        
+        # If the button was pressed while the backlight was off, 
+        # start at HOME and assume no buttons were pressed.
+        if self.lcd_backlight != LCD_BACKLIGHT:
+            
+            self.lcd_on()
+            
+            self.lcd_state("HOME")
+            R = 0
+            M = 0
+            L = 0
+            
+        count = 20
+        okay = False
+        while not okay:
+            lcdON = PATH + "lcd_status.txt"
+            try:
+                with open(sensorPath, "w") as f:
+                    f.write("1")
+                okay = True
+            except:
+                count = count - 1
+                if count < 0:
+                    okay = True
 
-        # If we're turning the backlight on after it has been shut off, start back up at HOME.
-        if ((self.lcd_backlight) != LCD_BACKLIGHT):
-            self.state = "HOME"
-
-        state = self.state
-
+        
+        # ********** HOME *********
+        # ********** HOME *********
+        # ********** HOME *********
         if state == "HOME":
             if M == 1:
                 if self.selection == 1:
@@ -157,6 +176,9 @@ class lcd:
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
 
+        # ********** SPOT INFO  *********
+        # ********** SPOT INFO  *********
+        # ********** SPOT INFO  *********
         if state == "SPOT_1":
             if M == 1:
                 if self.selection == 1:
@@ -167,12 +189,12 @@ class lcd:
                     self.lcd_state("BATTERY_LEVEL") # Battery Level (3 seconds)
                     self.lcd_state("SPOT_1")
                     self.lcd_cursor_move(3, 19)
-                elif self.selection == 3:
+                elif self.selection == 3: # Plant Info (Currently Non-existent
                     self.lcd_print_string("     PLANT INFO     ", 1)
                     self.lcd_print_string("No plant info at    ", 2)
                     self.lcd_print_string("this time. Exiting..", 3)
                     self.lcd_countdown(3)
-                    self.lcd_state("SPOT_1") # Plant Info. Screen
+                    self.lcd_state("SPOT_1")
                     self.lcd_cursor_move(4, 19)
 
             elif L == 1:
@@ -259,6 +281,9 @@ class lcd:
                     self.lcd_cursor_move(2, 19)
                     self.selection = 1
 
+        # ********** CONTROLS  *********
+        # ********** CONTROLS  *********
+        # ********** CONTROLS  *********
         if state == "CTRL_1":
             if M == 1:
                 if self.selection == 1:
@@ -301,11 +326,11 @@ class lcd:
                 elif self.selection == 5:
                     self.lcd_state("RESTART") # Restart
                     self.lcd_cursor_move(4, 19)
-                    self.selection = 1
+                    self.selection = 2
                 elif self.selection == 6:
                     self.lcd_state("SHUTDOWN") # Shutdown
                     self.lcd_cursor_move(4, 19)
-                    self.selection = 1
+                    self.selection = 2
 
             elif L == 1:
                 if self.cursorLine == 2:
@@ -355,6 +380,9 @@ class lcd:
                     self.selection = 1
 
 # TODO...
+        # ********** MESSAGES  *********
+        # ********** MESSAGES  *********
+        # ********** MESSAGES  *********
         if state == "MSG":
             if M == 1:
                 if self.selection == 1:
@@ -382,16 +410,61 @@ class lcd:
             if M == 1:
                 if self.selection != 4: # Rotate 90 deg. CW
                     self.lcd_clear()
-                    self.lcd_print_string("    Rotating...    ", 2)
                     if self.selection == 1: # Rotate 90 deg. CW
-                        pass
 # Begin 90 deg. CW Rotation Protocol...#
+                        count = 20
+                        okay = False
+                        success = 0
+                        while not okay:
+                            sensorPath = PATH + "rotate_90_cw.txt"
+                            try:
+                                with open(sensorPath, "w") as f:
+                                    f.write("1")
+                                    okay = True
+                                    success = 1
+                            except:
+                                count = count - 1
+                                if count < 0:
+                                    okay = True
+
                     elif self.selection == 2: # Rotate 90 deg. CCW
-                        pass
 # Begin 90 deg. CCW Rotation Protocol...#
+                        count = 20
+                        okay = False
+                        success = 0
+                        while not okay:
+                            sensorPath = PATH + "rotate_90_ccw.txt"
+                            try:
+                                with open(sensorPath, "w") as f:
+                                    f.write("1")
+                                    okay = True
+                                    success = 1
+                            except:
+                                count = count - 1
+                                if count < 0:
+                                    okay = True
+
                     elif self.selection == 3: # Rotate 180 deg.
-                        pass
 # Begin 180 deg. CW Rotation Protocol...#
+                        count = 20
+                        okay = False
+                        success = 0
+                        while not okay:
+                            sensorPath = PATH + "rotate_180.txt"
+                            try:
+                                with open(sensorPath, "w") as f:
+                                    f.write("1")
+                                    okay = True
+                                    success = 1
+                            except:
+                                count = count - 1
+                                if count < 0:
+                                    okay = True
+
+                    if success == 1:
+                        self.lcd_print_string("    Rotating...    ", 2)
+                    elif success == 0:
+                        self.lcd_print_string("Rotation Failure...", 2)
                     self.lcd_countdown(3)
                     self.lcd_state("ROTATE_PLANT")
                     self.lcd_cursor_move(self.selection, 19)
@@ -399,12 +472,12 @@ class lcd:
                 elif self.selection == 4:
                     self.lcd_state("CTRL_1") # Go Back to CTRL_1
                     self.lcd_cursor_move(2, 19)
-                    self.selection = 2
+                    self.selection = 1
 
             elif L == 1:
                 if self.selection == 1:
                     self.lcd_cursor_move(4, 19)
-                    self.selection = self.selection - 1
+                    self.selection = 4
                 else:
                     self.lcd_cursor_move(self.cursorLine - 1, 19)
                     self.selection = self.selection - 1
@@ -414,27 +487,42 @@ class lcd:
                     self.lcd_cursor_move(self.cursorLine + 1, 19)
                     self.selection = self.selection + 1
                 else:
-                    self.lcd_state("CTRL_3")
-                    self.lcd_cursor_move(2, 19)
-                    self.selection = self.selection + 1
+                    self.lcd_cursor_move(1, 19)
+                    self.selection = 1
 
         if state == "DOOR":
             if M == 1:
                 if self.selection == 1:
 
-# Read from file that states whether door is open (1) or closed (0). Binary/Int.
-                    try:
-                        curtainStatus = 1 # 1 = currently opened. 0 == currently closed.
-                        pass
-                    except:
-                        pass
+# Read from file that states whether door is open (1) or closed (0). Then request door change.
+                    count = 20
+                    okay = False
+                    success = 0
+                    doorStatus = "0"
+                    while not okay:
+                        sensorPathStatus = PATH + "door_status.txt"
+                        sensorPath = PATH + "door_change_request.txt"
+                        try:
+                            with open(sensorPathStatus, "r") as f:
+                                doorStatus = f.read().replace("\n","")
+                            with open(sensorPath, "w") as g:
+                                g.write("1")
+                            okay = True
+                            success = 1
+                        except:
+                            count = count - 1
+                            if count < 0:
+                                okay = True
+                    
                     self.lcd_clear()
-                    if curtainStatus == 1:
+                    if success == 1 and doorStatus == "1":
                         self.lcd_print_string("     Closing...     ", 2)
 
-                    elif curtainStatus == 0:
+                    elif success == 1 and doorStatus == "0":
                         self.lcd_print_string("     Opening...     ", 2)
-# FIRST check if door is open. Then call ROS to open the door. How should I do this? (DO HERE!)
+                    elif success == 0:
+                        self.lcd_print_string("  Door Failure...   ", 2)
+
                     self.lcd_countdown(3)
                     self.lcd_state("CTRL_1")
                     self.lcd_cursor_move(3, 19)
@@ -710,10 +798,27 @@ class lcd:
             if M == 1:
                 if self.selection == 1:
                     self.lcd_clear()
-                    self.lcd_print_string("  Taking Picture... ", 2)
-
-# Use ROS to take picture(?). Where should you store it?
+# Write to file to request picture to be taken.
                     
+                    count = 20
+                    okay = False
+                    success = 0
+                    while not okay:
+                        sensorPath = PATH + "take_picture_request.txt"
+                        try:
+                            with open(sensorPath, "w") as f:
+                                f.write("1")
+                            okay = True
+                            success = 1
+                        except:
+                            count = count - 1
+                            if count < 0:
+                                okay = True
+                    if success == 1:
+                        self.lcd_print_string("  Taking Picture... ", 2)
+                    elif success == 0:
+                        self.lcd_print_string(" Camera Failure...  ", 2)
+
                     self.lcd_countdown(3)
                     self.lcd_state("CTRL_2")
                     self.lcd_cursor_move(2, 19)
@@ -813,11 +918,12 @@ class lcd:
         if state == "CALIBRATE_1":
             if M == 1:
                 if self.selection == 1:
-                    self.lcd_state("EC_CALIB") # EC Calib
-                    self.lcd_cursor_move(4, 19)
+                    self.lcd_state("EC_CALIB") # EC Calib (NOT AVAILABLE)
+                    self.lcd_state("CALIBRATE_1")
+                    self.lcd_cursor_move(2, 19)
                     self.selection = 1
                 elif self.selection == 2:
-                    self.lcd_state("PH_CALIB") # PH Calib
+                    self.lcd_state("PH_CALIB_SPLASH") # PH Calib
                     self.lcd_cursor_move(1, 19)
                     self.selection = 1
                 elif self.selection == 3:
@@ -878,9 +984,9 @@ class lcd:
 
 # Send Byte to pH Probe to calibrate using 4.0 pH soln.
                     
-                    self.lcd_state("CALIBRATE_1")
-                    self.lcd_cursor_move(3, 19)
-                    self.selection = 2
+                    self.lcd_state("PH_CALIB")
+                    self.lcd_cursor_move(1, 19)
+                    self.selection = 1
                 elif self.selection == 2:
                     self.lcd_clear()
                     self.lcd_print_string("   Calibrating...  ", 2)
@@ -888,8 +994,8 @@ class lcd:
 
 # Send Byte to pH Probe to calibrate using 7.0 pH soln.
 
-                    self.lcd_state("CALIBRATE_1")
-                    self.lcd_cursor_move(3, 19)
+                    self.lcd_state("PH_CALIB")
+                    self.lcd_cursor_move(2, 19)
                     self.selection = 2
                 elif self.selection == 3:
                     self.lcd_clear()
@@ -898,9 +1004,9 @@ class lcd:
 
 # Send Byte to pH Probe to calibrate using 10.0 pH soln.
 
-                    self.lcd_state("CALIBRATE_1")
+                    self.lcd_state("PH_CALIB")
                     self.lcd_cursor_move(3, 19)
-                    self.selection = 2
+                    self.selection = 3
                 elif self.selection == 4:
                     self.lcd_state("CALIBRATE_1") # GO BACK
                     self.lcd_cursor_move(3, 19)
@@ -925,10 +1031,9 @@ class lcd:
     # Set to the new state
     def lcd_state(self, state):
         self.state = state
-
+        self.lcd_clear()
         if state == "SPLASH":
             self.lcd_print_string("       X-HAB!       ", 1)
-            self.lcd_print_string("                    ", 2)
             self.lcd_print_string("A project funded by ", 3)
             self.lcd_print_string("        NASA       ", 4)
 
@@ -972,66 +1077,83 @@ class lcd:
             self.lcd_print_string("      CONTROLS      ", 1)
             self.lcd_print_string("7. Calib. Sensors  ~", 2)
             self.lcd_print_string("8. Go Back         ~", 3)
-            self.lcd_print_string("                    ", 4)
 
         if state == "MSG":
             self.lcd_print_string("      MESSAGES      ", 1)
             self.lcd_print_string("1. Go Back         ~", 2)
-            self.lcd_print_string("                    ", 3)
-            self.lcd_print_string("                    ", 4)
 
         if state == "WATER_LEVEL":
-            self.lcd_clear()
 # Get water level reading form file. For now, assume int 0 to 4
-            try:
-                waterLevel = 2
-                pass
-            except:
-                pass
-            self.lcd_print_string("     WATER LEVEL    ", 1)
-            if waterLevel == 0:
+           
+            count = 20
+            okay = False
+            success = 0
+            waterLevel = "-1"
+            while not okay:
+                sensorPath = PATH + "water_level.txt"
+                try:
+                    with open(sensorPath, "r") as f:
+                        waterLevel = f.read().replace("\n","")
+                        okay = True
+                        success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
+            
+            if success == 1:
+                self.lcd_print_string("     WATER LEVEL    ", 1)
+            if success == 1 and waterLevel == "0":
                 self.lcd_print_string("||                  ", 3)
                 self.lcd_print_string("      EMPTY!!!      ", 4)
-            elif waterLevel == 1:
+            elif success == 1 and waterLevel == "1":
                 self.lcd_print_string("|||||               ", 3)
                 self.lcd_print_string("        LOW         ", 4)
-            elif waterLevel == 2:
+            elif success == 1 and waterLevel == "2":
                 self.lcd_print_string("||||||||||          ", 3)
                 self.lcd_print_string("     HALF FULL      ", 4)
-            elif waterLevel == 3:
+            elif success == 1 and waterLevel == "3":
                 self.lcd_print_string("|||||||||||||||     ", 3)
                 self.lcd_print_string("    ALMOST FULL     ", 4)
-            elif waterLevel == 4:
+            elif success == 1 and waterLevel == "4":
                 self.lcd_print_string("||||||||||||||||||| ", 3)
                 self.lcd_print_string("       FULL!        ", 4)
+            elif success == 0:
+                self.lcd_print_string("    Water Level     ", 2)
+                self.lcd_print_string("   Read Failure...  ", 3)
 
             self.lcd_countdown_char(3)
 
         if state == "BATTERY_LEVEL":
-            self.lcd_clear()
-# Get battery level reading from file. For now, assume 0 to 4.
-            try:
-                batteryLevel = 2
-                pass
-            except:
-                pass
-            self.lcd_print_string("   BATTERY LEVEL    ", 1)
-            if batteryLevel == 0:
-                self.lcd_print_string("||                  ", 3)
-                self.lcd_print_string("      EMPTY!!!      ", 4)
-            elif batteryLevel == 1:
-                self.lcd_print_string("|||||               ", 3)
-                self.lcd_print_string("        LOW         ", 4)
-            elif batteryLevel == 2:
-                self.lcd_print_string("||||||||||          ", 3)
-                self.lcd_print_string("     HALF FULL      ", 4)
-            elif batteryLevel == 3:
-                self.lcd_print_string("|||||||||||||||     ", 3)
-                self.lcd_print_string("    ALMOST FULL     ", 4)
-            elif batteryLevel == 4:
-                self.lcd_print_string("||||||||||||||||||| ", 3)
-                self.lcd_print_string("       FULL!        ", 4)
+# Get battery level reading from file. Assume 0 to 100.
 
+            count = 20
+            okay = False
+            success = 0
+            batteryLevel = "-1"
+            while not okay:
+                sensorPath = PATH + "battery_level.txt"
+                try:
+                    with open(sensorPath, "r") as f:
+                        batteryLevel = f.read().replace("\n","")
+                        okay = True
+                        success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
+
+            if success == 1 and int(batteryLevel) >= 0 and int(batteryLevel) <= 100: 
+                self.lcd_print_string("   BATTERY LEVEL    ", 1)
+                barLen = math.trunc((int(batteryLevel)*20.0)/100.0)
+                print barLen
+                barStr = "|"*barLen
+                print barStr
+                self.lcd_print_string(barStr, 3)
+                self.lcd_print_string("      " + batteryLevel + "% Full      ", 4)
+            else:
+                self.lcd_print_string("    Battery Read    ", 2)
+                self.lcd_print_string("     Failure...     ", 3)
             self.lcd_countdown_char(3)
 
         if state == "PLANT_INFO_1":
@@ -1043,79 +1165,153 @@ class lcd:
         if state == "PLANT_INFO_2":
             self.lcd_print_string("     PLANT INFO     ", 1)
             self.lcd_print_string("4. Go Back         ~", 2)
-            self.lcd_print_string("                    ", 3)
-            self.lcd_print_string("                    ", 4)
 
         if state == "EC":
 # Get EC reading from file. For now, assume int 10 to 9999.
-            try:
-                EC_reading = 4000 # in uS/cm
-                EC_reading_ms_cm = round(EC_reading/1000, 2) # in mS/cm
-                dispStr = "     " + str(EC_reading_ms_cm) + " mS/cm     "
-                pass
-            except:
-                pass
-            self.lcd_print_string("     EC READING     ", 1)
-            self.lcd_print_string("                    ", 2)
-            self.lcd_print_string(dispStr, 3)
+         
+            count = 20
+            okay = False
+            success = 0
+            ecReading = "-1"
+            while not okay:
+                sensorPath = PATH + "ec_reading.txt"
+                try:
+                    with open(sensorPath, "r") as f:
+                        ecReading = f.read().replace("\n","") # in mS/cm
+                        okay = True
+                        dispStr = "     " + str(ecReading) + " uS/cm     "
+                        success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
+            
+            if success == 1 and int(ecReading) >= 0 and int(ecReading) < 1000000:
+                self.lcd_print_string("     EC READING     ", 1)
+                self.lcd_print_string("                    ", 2)
+                self.lcd_print_string(dispStr, 3)
+            else:
+                self.lcd_print_string(" EC Read Failure... ", 2)
+
             self.lcd_countdown(3)
 
         if state == "PH":
 # Get PH reading from file. For now, assume float with 2 point precision.
-            try:
-                pH_reading = 7.00
-                dispStr = "       " + str(pH_reading) + " PH      "
-                pass
-            except:
-                pass
-            self.lcd_print_string("     PH READING     ", 1)
-            self.lcd_print_string("                    ", 2)
-            self.lcd_print_string(dispStr, 3)
+           
+            count = 20
+            okay = False
+            success = 0
+            phReading = "-1.00"
+            while not okay:
+                sensorPath = PATH + "ph_reading.txt"
+                try:
+                    with open(sensorPath, "r") as f:
+                        phReading = f.read().replace("\n","")
+                        okay = True
+                        dispStr = "      " + phReading  + " pH     "
+                        success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
+           
+            if success == 1 and float(phReading) >= 0.0 and float(phReading) <= 14.0:
+                self.lcd_print_string("     PH READING     ", 1)
+                self.lcd_print_string("                    ", 2)
+                self.lcd_print_string(dispStr, 3)
+            else:
+                self.lcd_print_string(" PH Read Failure... ", 2)
+            
             self.lcd_countdown(3)
 
         if state == "HUMIDITY":
 # Get humidity reading from file. For now, assume int value.
-            try:
-                humidity = 83
-                dispStr = "        " + str(humidity) + " %        "
-                pass
-            except:
-                pass
-            self.lcd_print_string("      HUMIDITY      ", 1)
-            self.lcd_print_string("                    ", 2)
-            self.lcd_print_string(dispStr, 3)
+            
+            count = 20
+            okay = False
+            success = 0
+            while not okay:
+                sensorPath = PATH + "humidity_reading.txt"
+                try:
+                    with open(sensorPath, "r") as f:
+                        humidityReading = f.read().replace("\n","")
+                        okay = True
+                        dispStr = "        " + humidityReading + "%      "
+                        success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
+            
+            if success == 1 and int(humidityReading) >= 0 and int(humidityReading) <= 100:
+                self.lcd_print_string("   HUMIDITY LEVEL   ", 1)
+                self.lcd_print_string(dispStr, 3)
+            else:
+                self.lcd_print_string("    Humidity Read    ", 2)
+                self.lcd_print_string("     Failure...     ", 3)
+
             self.lcd_countdown(3)
 
         if state == "WATER_TEMP":
 # Get water temp. reading from file. For now, assume int in celcius.
-            try:
-                waterTempC = 23
-                waterTempF = int(9/5*waterTempC + 32)
-                dispStrC = "     " + str(waterTempC) + " deg. C      "
-                dispStrF = "     " + str(waterTempF) + " deg. F      "
-                pass
-            except:
-                pass
-            self.lcd_print_string("    WATER TEMP.     ", 1)
-            self.lcd_print_string("                    ", 2)
-            self.lcd_print_string(dispStrC, 3)
-            self.lcd_print_string(dispStrF, 4)
+            
+            count = 20
+            okay = False
+            success = 0
+            waterTempReadingC = "-21"
+            while not okay:
+                sensorPath = PATH + "water_temp_reading.txt"
+                try:
+                    with open(sensorPath, "r") as f:
+                        waterTempReadingC = f.read().replace("\n","")
+                        waterTempReadingF = str(math.trunc(9.0/5.0*int(waterTempReadingC)+32))
+                        dispStrC = "     " + waterTempReadingC + " deg. C      "
+                        dispStrF = "     " + waterTempReadingF + " deg. F      "
+                        okay = True
+                        success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
+            
+            if success == 1 and int(waterTempReadingC) >= -20 and int(waterTempReadingC) <= 90:
+                self.lcd_print_string(" WATER TEMPERATURE  ", 1)
+                self.lcd_print_string(dispStrC, 3)
+                self.lcd_print_string(dispStrF, 4)
+            else:
+                self.lcd_print_string("  Water Temperature  ", 2)
+                self.lcd_print_string("   Read Failure...   ", 3)
             self.lcd_countdown_char(3)
 
         if state == "AIR_TEMP":
 # Get air temp. reading from file. For now, assume int in celcius.
-            try:
-                airTempC = 25
-                airTempF = int(9/5*airTempC + 32)
-                dispStrC = "     " + str(airTempC) + " deg. C      "
-                dispStrF = "     " + str(airTempF) + " deg. F      "
-                pass
-            except:
-                pass
-            self.lcd_print_string("      AIR TEMP.     ", 1)
-            self.lcd_print_string("                    ", 2)
-            self.lcd_print_string(dispStrC, 3)
-            self.lcd_print_string(dispStrF, 4)
+             
+            count = 20
+            okay = False
+            success = 0
+            airTempReadingC = "-21"
+            while not okay:
+                sensorPath = PATH + "air_temp_reading.txt"
+                try:
+                    with open(sensorPath, "r") as f:
+                        airTempReadingC = f.read().replace("\n","")
+                        airTempReadingF = str(math.trunc(9.0/5.0*int(airTempReadingC)+32))
+                        dispStrC = "     " + airTempReadingC + " deg. C      "
+                        dispStrF = "     " + airTempReadingF + " deg. F      "
+                        okay = True
+                        success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
+            
+            if success == 1 and int(airTempReadingC) >= -20 and int(airTempReadingC) <= 90:
+                self.lcd_print_string("  AIR TEMPERATURE   ", 1)
+                self.lcd_print_string(dispStrC, 3)
+                self.lcd_print_string(dispStrF, 4)
+            else:
+                self.lcd_print_string("  Air Temperature      ", 2)
+                self.lcd_print_string("  Read Failure...  ", 3)
             self.lcd_countdown_char(3)
 
         if state == "ROTATE_PLANT":
@@ -1126,26 +1322,36 @@ class lcd:
 
         if state == "DOOR":
 # Read from file that states whether door is open (1) or closed (0). Binary/Int.
-            try:
-                curtainStatus = 1 # 1 = currently opened. 0 == currently closed.
-                pass
-            except:
-                pass
-            self.lcd_clear()
-            if curtainStatus == 0: # i.e. currently closed
+
+            count = 20
+            okay = False
+            success = 0
+            doorStatus = "0"
+            while not okay:
+                sensorPathStatus = PATH + "door_status.txt"
+                try:
+                    with open(sensorPathStatus, "r") as f:
+                        # 1 = currently opened. 0 == currently closed.
+                        doorStatus = f.read().replace("\n","")
+                    okay = True
+                    success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
+
+            if success == 1 and doorStatus == "0": # i.e. currently closed
                 self.lcd_print_string("     Open Door?     ", 1)
                 self.lcd_print_string("1. Yes             ~", 3)
                 self.lcd_print_string("2. No, Go Back     ~", 4)
-            elif curtainStatus == 1: # i.e. currently open
+            elif success == 1 and doorStatus == "1": # i.e. currently open
                 self.lcd_print_string("     Close Door?    ", 1)
                 self.lcd_print_string("1. Yes             ~", 3)
                 self.lcd_print_string("2. No, Go Back     ~", 4)
-            else: # i.e. read fail...
-                self.lcd_print_string(" Door Malfunction  ", 1)
-                self.lcd_print_string("    Exiting...     ", 3)
-                self.countdown(3)
-                self.lcd_state("CTRL_1")
-                self.lcd_cursor_move(3, 19)
+            elif success == 0: # i.e. read fail...
+                self.lcd_print_string("  Open/Close Door?  ", 1)
+                self.lcd_print_string("1. Yes             ~", 3)
+                self.lcd_print_string("2. No, Go Back     ~", 4)
 
         if state == "LIGHT_SETTINGS":
             self.lcd_print_string("   LIGHT SETTINGS   ", 1)
@@ -1154,60 +1360,81 @@ class lcd:
             self.lcd_print_string("3. Go Back         ~", 4)
 
         if state == "VARY_BRIGHTNESS":
-            self.lcd_clear()
 # WRITE to file that states brightness level (int 0-255) and time for that brightness level.
-            try:
-                brightnessVector = (62, 128, 255)
-                birghtnessTimeVector = (30, 120, 480)
-                if self.selection < 4:
-                    brightnessLevel = (brightnessVector[0])
-                elif self.selection > 3 and self.selection < 7:
-                    brightnessLevel = (brightnessVector[1])
-                elif self.selection > 6 and self.selection < 10:
-                    brightnessLevel = (brightnessVector[2])
-                brightnessTimeLimit = 30
-                if self.selection % 3 == 1:
-                    brightnessTimeLimit = (brightnessTimeVector[0])
-                elif self.selection % 3 == 2:
-                    brightnessTimeLimit = (brightnessTimeVector[1])
-                elif self.selection % 3 == 0:
-                    brightnessTimeLimit = (brightnessTimeVector[2])
-# Set Brightness Level and Time Limit here.
-# Set LED OFF/ON State here as 1 (ON)
-                pass
-            except:
-                pass
-            self.lcd_print_string(" Brightness set to  ", 1)
-            if self.selection == 1:
-                self.lcd_print_string("        LOW         ", 2)
-                self.lcd_print_string("   for 30 minutes   ", 3)
-            if self.selection == 2:
-                self.lcd_print_string("        LOW         ", 2)
-                self.lcd_print_string("    for 2 hours     ", 3)
-            if self.selection == 3:
-                self.lcd_print_string("        LOW         ", 2)
-                self.lcd_print_string("    for 8 hours     ", 3)
+            
+            brightnessVector = ("62", "128", "255")
+            brightnessTimeVector = ("30", "120", "480")
+            
+            brightnessLevel = "255"
+            if self.selection <= 3:
+                brightnessLevel = (brightnessVector[0])
+            elif self.selection >= 4 and self.selection <= 6:
+                brightnessLevel = (brightnessVector[1])
+            elif self.selection >= 7 and self.selection <= 9:
+                brightnessLevel = (brightnessVector[2])
+            
+            brightnessTimeLimit = "30"
+            if self.selection % 3 == 1:
+                brightnessTimeLimit = (brightnessTimeVector[0])
+            elif self.selection % 3 == 2:
+                brightnessTimeLimit = (brightnessTimeVector[1])
+            elif self.selection % 3 == 0:
+                brightnessTimeLimit = (brightnessTimeVector[2])
 
-            if self.selection == 4:
-                self.lcd_print_string("       MEDIUM       ", 2)
-                self.lcd_print_string("   for 30 minutes   ", 3)
-            if self.selection == 5:
-                self.lcd_print_string("       MEDIUM       ", 2)
-                self.lcd_print_string("    for 2 hours     ", 3)
-            if self.selection == 6:
-                self.lcd_print_string("       MEDIUM       ", 2)
-                self.lcd_print_string("    for 8 hours     ", 3)
+            count = 20
+            okay = False
+            success = 0
+            while not okay:
+                sensorTimePath = PATH + "light_time_request.txt"
+                sensorBrightnessPath = PATH + "light_brightness_request.txt"
+                try:
+                    with open(sensorTimePath, "w") as f:
+                        f.write(brightnessTimeLimit)
+                    with open(sensorBrightnessPath, "w") as g:
+                        g.write(brightnessLevel)
+                    okay = True
+                    success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
 
-            if self.selection == 7:
-                self.lcd_print_string("        HIGH        ", 2)
-                self.lcd_print_string("   for 30 minutes   ", 3)
-            if self.selection == 8:
-                self.lcd_print_string("        HIGH        ", 2)
-                self.lcd_print_string("    for 2 hours     ", 3)
-            if self.selection == 9:
-                self.lcd_print_string("        HIGH        ", 2)
-                self.lcd_print_string("    for 8 hours     ", 3)
+            if success == 1:
+                self.lcd_print_string(" Brightness set to  ", 1)
+                if self.selection == 1:
+                    self.lcd_print_string("        LOW         ", 2)
+                    self.lcd_print_string("   for 30 minutes   ", 3)
+                if self.selection == 2:
+                    self.lcd_print_string("        LOW         ", 2)
+                    self.lcd_print_string("    for 2 hours     ", 3)
+                if self.selection == 3:
+                    self.lcd_print_string("        LOW         ", 2)
+                    self.lcd_print_string("    for 8 hours     ", 3)
 
+                if self.selection == 4:
+                    self.lcd_print_string("       MEDIUM       ", 2)
+                    self.lcd_print_string("   for 30 minutes   ", 3)
+                if self.selection == 5:
+                    self.lcd_print_string("       MEDIUM       ", 2)
+                    self.lcd_print_string("    for 2 hours     ", 3)
+                if self.selection == 6:
+                    self.lcd_print_string("       MEDIUM       ", 2)
+                    self.lcd_print_string("    for 8 hours     ", 3)
+
+                if self.selection == 7:
+                    self.lcd_print_string("        HIGH        ", 2)
+                    self.lcd_print_string("   for 30 minutes   ", 3)
+                if self.selection == 8:
+                    self.lcd_print_string("        HIGH        ", 2)
+                    self.lcd_print_string("    for 2 hours     ", 3)
+                if self.selection == 9:
+                    self.lcd_print_string("        HIGH        ", 2)
+                    self.lcd_print_string("    for 8 hours     ", 3)
+            
+            elif success == 0:
+                self.lcd_print_string("   LED Brightness   ", 2)
+                self.lcd_print_string("     Failure...     ", 3)
+            
             self.lcd_countdown(3)
 
         if state == "VARY_BRIGHTNESS_1":
@@ -1229,53 +1456,72 @@ class lcd:
             self.lcd_print_string("9. High (8 hours)  ~", 4)
 
         if state == "VARY_BRIGHTNESS_4":
+            self.lcd_clear()
             self.lcd_print_string("  BRIGHTNESS LEVEL  ", 1)
             self.lcd_print_string("10. Go Back        ~", 2)
-            self.lcd_print_string("                    ", 3)
-            self.lcd_print_string("                    ", 4)
 
         if state == "LED_ON_OFF":
-            self.lcd_clear()
-            try:
-                ledOffOn = 0
-                birghtnessTimeVector = (30, 120, 480)
-                if self.selection < 4:
-                    ledOffOn = 0
-                elif self.selection > 3 and self.selection < 7:
-                    ledOffOn = 1
+            
+            brightnessTimeVector = ("30", "120", "480")
+            
+            brightnessLevel = "255"
+            if self.selection <= 3:
+                brightnessLevel = "0"
+            elif self.selection >= 3 and self.selection <= 6:
+                ledOffOn = "255"
 
-                if self.selection % 3 == 1:
-                    brightnessTimeLimit = (brightnessTimeVector[0])
-                elif self.selection % 3 == 2:
-                    brightnessTimeLimit = (brightnessTimeVector[1])
-                elif self.selection % 3 == 0:
-                    brightnessTimeLimit = (brightnessTimeVector[2])
-# WRITE to file that states LED OFF 0 or ON 1, and time for that brightness level. Set LED State and Time Limit here.
-                pass
-            except:
-                pass
+            brightnessTimeLimit = "30"
+            if self.selection % 3 == 1:
+                brightnessTimeLimit = (brightnessTimeVector[0])
+            elif self.selection % 3 == 2:
+                brightnessTimeLimit = (brightnessTimeVector[1])
+            elif self.selection % 3 == 0:
+                brightnessTimeLimit = (brightnessTimeVector[2])
 
-            self.lcd_print_string("    LEDs set to     ", 1)
-            if self.selection == 1:
-                self.lcd_print_string("        OFF         ", 2)
-                self.lcd_print_string("   for 30 minutes   ", 3)
-            if self.selection == 2:
-                self.lcd_print_string("        OFF         ", 2)
-                self.lcd_print_string("    for 2 hours     ", 3)
-            if self.selection == 3:
-                self.lcd_print_string("        OFF         ", 2)
-                self.lcd_print_string("    for 8 hours     ", 3)
+            count = 20
+            okay = False
+            success = 0
+            while not okay:
+                sensorTimePath = PATH + "light_time_request.txt"
+                sensorBrightnessPath = PATH + "light_brightness_request.txt"
+                try:
+                    with open(sensorTimePath, "w") as f:
+                        f.write(brightnessTimeLimit)
+                    with open(sensorBrightnessPath, "w") as g:
+                        g.write(brightnessLevel)
+                    okay = True
+                    success = 1
+                except:
+                    count = count - 1
+                    if count < 0:
+                        okay = True
 
-            if self.selection == 4:
-                self.lcd_print_string("         ON         ", 2)
-                self.lcd_print_string("   for 30 minutes   ", 3)
-            if self.selection == 5:
-                self.lcd_print_string("         ON         ", 2)
-                self.lcd_print_string("    for 2 hours     ", 3)
-            if self.selection == 6:
-                self.lcd_print_string("         ON         ", 2)
-                self.lcd_print_string("    for 8 hours     ", 3)
+            if success == 1:
+                self.lcd_print_string("    LEDs set to     ", 1)
+                if self.selection == 1:
+                    self.lcd_print_string("        OFF         ", 2)
+                    self.lcd_print_string("   for 30 minutes   ", 3)
+                if self.selection == 2:
+                    self.lcd_print_string("        OFF         ", 2)
+                    self.lcd_print_string("    for 2 hours     ", 3)
+                if self.selection == 3:
+                    self.lcd_print_string("        OFF         ", 2)
+                    self.lcd_print_string("    for 8 hours     ", 3)
 
+                if self.selection == 4:
+                    self.lcd_print_string("         ON         ", 2)
+                    self.lcd_print_string("   for 30 minutes   ", 3)
+                if self.selection == 5:
+                    self.lcd_print_string("         ON         ", 2)
+                    self.lcd_print_string("    for 2 hours     ", 3)
+                if self.selection == 6:
+                    self.lcd_print_string("         ON         ", 2)
+                    self.lcd_print_string("    for 8 hours     ", 3)
+            
+            if success == 0:
+                self.lcd_print_string("     LED ON/OFF     ", 2)
+                self.lcd_print_string("     Failure...     ", 3)
+            
             self.lcd_countdown(3)
 
         if state == "LED_ON_OFF_1":
@@ -1293,23 +1539,18 @@ class lcd:
         if state == "LED_ON_OFF_3":
             self.lcd_print_string("     LEDs ON/OFF    ", 1)
             self.lcd_print_string("7. Go Back         ~", 2)
-            self.lcd_print_string("                    ", 3)
-            self.lcd_print_string("                    ", 4)
 
         if state == "TAKE_PICTURE":
-            self.lcd_clear()
             self.lcd_print_string("   Take Picture?    ", 1)
             self.lcd_print_string("1. Yes             ~", 3)
             self.lcd_print_string("2. No, Go Back     ~", 4)
 
         if state == "RESTART":
-            self.lcd_clear()
             self.lcd_print_string("  Restart System?   ", 1)
             self.lcd_print_string("1. Yes             ~", 3)
             self.lcd_print_string("2. No, Go Back     ~", 4)
 
         if state == "SHUTDOWN":
-            self.lcd_clear()
             self.lcd_print_string("  Shutdown System?  ", 1)
             self.lcd_print_string("1. Yes             ~", 3)
             self.lcd_print_string("2. No, Go Back     ~", 4)
@@ -1322,8 +1563,6 @@ class lcd:
             self.lcd_print_string("3. Go Back         ~", 4)
 
         if state == "EC_CALIB":
-
-
             self.lcd_print_string("EC calibrating does ", 1)
             self.lcd_print_string("not work at this    ", 2)
             self.lcd_print_string("time. Exiting...    ", 3)
@@ -1334,19 +1573,22 @@ class lcd:
             #self.lcd_print_string("button = calib; LEFT", 3)
             #self.lcd_print_string("button = cancel.    ", 4)
 
-        if state == "PH_CALIB":
+        if state == "PH_CALIB_SPLASH":
             self.lcd_print_string("Place PH sensor in  ", 1)
-            self.lcd_print_string("7, 4, then 10 PH       ", 2)
+            self.lcd_print_string("7, 4, then 10 PH    ", 2)
             self.lcd_print_string("calibration soln... ", 3)
 
             self.lcd_countdown(3)
 
             self.lcd_print_string("See User Manual for ", 1)
             self.lcd_print_string("additional calib.   ", 2)
-            self.lcd_print_string("instructions.", 3)
+            self.lcd_print_string("calibration         ", 3)
+            self.lcd_print_string("instructions.       ", 4)
             
             self.lcd_countdown(3)
-
+            self.lcd_state("PH_CALIB")
+        
+        if state == "PH_CALIB":
             self.lcd_print_string("1. 4 PH Solution   ~", 1)
             self.lcd_print_string("2. 7 PH Solution   ~", 2)
             self.lcd_print_string("3. 10 PH Solution  ~", 3)
@@ -1370,12 +1612,13 @@ class lcd:
     # clocks EN to latch command
     def lcd_strobe(self, data):
         self.lcd_device.write_cmd(data | En | self.lcd_backlight)
-        sleep(.0002)
+        sleep(.0005)
         self.lcd_device.write_cmd(( (data & ~En) | self.lcd_backlight))
-        sleep(.0002)
+        sleep(.0003)
 
     def lcd_write_four_bits(self, data):
         self.lcd_device.write_cmd(data | self.lcd_backlight)
+        sleep(.0002)
         self.lcd_strobe(data)
 
     # write a command to lcd

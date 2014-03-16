@@ -2,6 +2,8 @@
 
 # The contents of this file will have to go in the main start up file.
 
+PATH = "home/xhab/data/"
+
 import lcddriver
 import time
 import json
@@ -15,6 +17,9 @@ if pid == 0:
     os.execvp("./interrupt", ["./interrupt"])
 
 lcd = lcddriver.lcd()
+
+# Need to incorporate this file.
+# interruptFile = PATH + "interrupt.txt"
 
 with open("interrupt.txt", "w") as f:
     f.write("0")
@@ -34,6 +39,7 @@ def callback(stuff):
     lcd.beingServiced = 1
     lcd.interruptFlag = 0
     
+    count = 20
     okay = False
     while not okay:
         with open("interrupt.txt", "r") as f:
@@ -42,10 +48,13 @@ def callback(stuff):
             if text[0] == "0":
                 return
             okay = True
-        except IndexError:
-            pass
+        except:
+            count = count - 1
+            if count < 0:
+                print "ERROR in interrupt callback handler."
+                okay = True
 
-    time.sleep(.05)
+    time.sleep(.01)
     
     okay = False
     while not okay:
