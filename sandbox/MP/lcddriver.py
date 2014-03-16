@@ -122,18 +122,18 @@ class lcd:
             M = 0
             L = 0
             
-            count = 20
-            okay = False
-            while not okay:
-                lcdON = PATH + "lcd_status.txt"
+        count = 20
+        okay = False
+        while not okay:
+            lcdON = PATH + "lcd_status.txt"
             try:
                 with open(sensorPath, "w") as f:
                     f.write("1")
                 okay = True
             except:
                 count = count - 1
-            if count < 0:
-                okay = True
+                if count < 0:
+                    okay = True
 
         
         # ********** HOME *********
