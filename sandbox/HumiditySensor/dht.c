@@ -4,16 +4,12 @@
 
 //#define MAXTIMINGS 100
 //#define TIMEOUT 10000
-
-extern "C"{
-int readValues(int pin,float *temp, float *Humidity);
-  int test(int);
-}
+int readValues(int pin);
 #include <core.h>
 
-//int dhtpin = -1;
+int dhtpin = -1;
 
-/*
+
 void setup() {
 
   if (argc != 2) {
@@ -36,20 +32,20 @@ void setup() {
 } // main
 
 void loop() {
-  readDHT(type, dhtpin);
+  readValues(dhtpin);
   //delay(10000);
   exit(-1);
 }
 
 #define DEBUG = true;
-*/
+
 //int bits[250], data[100];
 //int bitidx = 0;
 
-int readValues(int pin,float *temp, float *humidity) {
+int readValues(int pin) {
   //printf("Reading %d on pin %d", type, pin);
   
-    int MAXTIMINGS = 100;
+  int MAXTIMINGS = 100;
   //int bits[250],data[100];
   //int bitidx = 0;
   int data[100];
@@ -148,35 +144,15 @@ int readValues(int pin,float *temp, float *humidity) {
       f /= 10.0;
       if (data[2] & 0x80)
 	f *= -1;
-      *temp = f;
-      *humidity = h;
-      printf("Temp =  %.1f *C, Hum = %.1f %%\n", f, h);
+      //printf("Temp =  %.1f *C, Hum = %.1f %%\n", f, h);
+      printf("0,");
+      printf("%.1f,%.1f\n", f,h);
       return 0;
     }
   else
     {
-      *temp = 0;
-      *temp = 0;
-      printf("less data or checksum error");
+      printf("-1");
+      //printf("less data or checksum error");
     }
-    return 1;
-
-    
-}
-
-int test(int num)
-{
-   // REQUEST SAMPLE
-  pinMode(num, OUTPUT);
-  
-  //start the pin in high state
-  digitalWrite(num, HIGH); 
-  
-  usleep(1000);
-  
-  // GET ACKNOWLEDGE or TIMEOUT
-  //  if(digitalRead(num) == HIGH)
-    return num+1;
-    //else
-    //return num-1;
+    return 1;  
 }
