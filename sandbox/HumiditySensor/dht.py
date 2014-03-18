@@ -35,7 +35,7 @@ class dht:
                     self.temp = (float)(out.split(',')[1])
                     self.humidity = (float)(out.split(',')[2])
                 #else:#failure error
-                    self.error = (int)(out.split(',')[0])
+                self.error = (int)(out.split(',')[0])
             else:
                 self.error = -6
                         
