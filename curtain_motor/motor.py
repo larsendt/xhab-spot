@@ -4,7 +4,7 @@ import time, os
 GPIO_MODE_PATH= os.path.normpath('/sys/devices/virtual/misc/gpio/mode/')
 GPIO_PIN_PATH=os.path.normpath('/sys/devices/virtual/misc/gpio/pin/')
 GPIO_FILENAME="gpio"
-
+ 
 ## create a couple of empty arrays to store the pointers for our files
 pinMode = []
 pinData = []
