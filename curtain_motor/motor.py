@@ -15,9 +15,8 @@ LOW =  "0"
 INPUT = "0"
 OUTPUT = "1"
 
-#while True:
 ## First, populate the arrays with file objects that we can use later.
-for i in range(0,5):
+for i in range(0,2):
     pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(i)))
     pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(i)))
 
@@ -27,81 +26,54 @@ for pin in pinMode:
     file.write(OUTPUT)      ## set the mode of the pin
     file.close()            ## IMPORTANT- must close file to make changes!
 
-## Make all the pins low
-#for pin in pinData:
-file = open(pinData[0], 'r+') ##open the file in r/w mode
-file.write(LOW)        ## set the pin to LOW
-file.close()           ## IMPORTANT - must close file to make changes!
+## Clockwise rotation function
+def clock(dur):   
+	file = open(pinData[0], 'r+') ##open the file in r/w mode
+        file.write(LOW)        ## set the pin to LOW
+        file.close()           ## IMPORTANT - must close file to make changes!
 
-file = open(pinData[1], 'r+') ##open the file in r/w mode
-file.write(HIGH)        ## set the pin to LOW
-file.close()           ## IMPORTANT - must close file to make changes!
+        file = open(pinData[1], 'r+') ##open the file in r/w mode
+        file.write(HIGH)        ## set the pin to HIGH
+        file.close()           ## IMPORTANT - must close file to make changes!
 
-file = open(pinData[2], 'r+') ##open the file in r/w mode
-file.write(LOW)        ## set the pin to LOW
-file.close() 
+	time.sleep(dur)
 
-file = open(pinData[3], 'r+') ##open the file in r/w mode
-file.write(HIGH)        ## set the pin to LOW
-file.close()           ## IMPORTANT - must close file to make changes!
 
-file = open(pinData[4], 'r+') ##open the file in r/w mode
-file.write(LOW)        ## set the pin to LOW
-file.close()           ## IMPORTANT - must close file to make changes!
+## Counter-clockwise rotation function
+def counterclock(dur):
+	file = open(pinData[0], 'r+') ##open the file in r/w mode
+        file.write(HIGH)        ## set the pin to HIGH
+        file.close()           ## IMPORTANT - must close file to make changes!
 
-from array import *
-temp = ['','','','','']
-file = open(pinData[0], 'r')
-temp[0] = file.read()
+        file = open(pinData[1], 'r+') ##open the file in r/w mode
+        file.write(LOW)        ## set the pin to LOW
+        file.close()           ## IMPORTANT - must close file to make changes!
+	
+	time.sleep(dur)
 
-file = open(pinData[1], 'r')
-temp[1] = file.read()
+## Break operation function
+def stop():
+	file = open(pinData[0], 'r+') ##open the file in r/w mode
+        file.write(LOW)        ## set the pin to LOW
+        file.close()           ## IMPORTANT - must close file to make changes!
 
-file = open(pinData[2], 'r')
-temp[2] = file.read()
+        file = open(pinData[1], 'r+') ##open the file in r/w mode
+        file.write(LOW)        ## set the pin to LOW
+        file.close()           ## IMPORTANT - must close file to make changes!
+	
 
-file = open(pinData[3], 'r')
-temp[3] = file.read()
+print "1. Counter-Clockwise rotation" 
+print "2. Clockwise rotation"
+option = raw_input('Choose an option:' )
+input_time = raw_input('Enter the duration of rotation in seconds: ')
+dur = float(input_time)
 
-file = open(pinData[4], 'r')
-temp[4] = file.read()
+if option=='1':
+	counterclock(dur)
+	stop()
 
-print"" + temp[0] + temp[1] + temp[2] + temp[3] + temp[4]
-
-    ##Rotate the left motor in Clockwise direction
-    #file = open(pinData[3], 'r+') ## accessing pin 2 data file 
-    #file.write(HIGH)      ## set the mode of the pin
-    #file.close()          ## IMPORTANT- must close file to make changes!
-
-    #file = open(pinData[4], 'r+') ## accessing pin 2 data file 
-    #file.write(LOW)       ## set the mode of the pin
-    #file.close()          ## IMPORTANT- must close file to make changes!
-
-    #time.sleep(0.25)  
-
-    ##Brake the rotation
-    #file = open(pinData[3], 'r+') ## accessing pin 2 data file 
-    #file.write(LOW)       ## set the mode of the pin
-    #file.close()          ## IMPORTANT- must close file to make changes!
-
-    #time.sleep(0.1)
-
-    ##Rotate the left motor in Anti-Clockwise direction
-    #file = open(pinData[3], 'r+') ## accessing pin 2 data file 
-    #file.write(LOW)       ## set the mode of the pin
-    #file.close()          ## IMPORTANT- must close file to make changes!
-
-    #file = open(pinData[4], 'r+') ## accessing pin 2 data file 
-    #file.write(HIGH)      ## set the mode of the pin
-    #file.close()          ## IMPORTANT- must close file to make changes!
-
-    #time.sleep(0.25)
-    
-    ##Brake the rotation
-    #file = open(pinData[4], 'r+') ## accessing pin 2 data file 
-    #file.write(LOW)       ## set the mode of the pin
-    #file.close()          ## IMPORTANT- must close file to make changes!
-
-    #time.sleep(0.5)
-
+if option=='2':
+	clock(dur)
+	stop()
+	
 
