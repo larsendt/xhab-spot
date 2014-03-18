@@ -27,11 +27,15 @@ class PHSensor(object):
         val = ""
         for i in range(50):
             inputchar = self.port.read()
+            print "inputchar:", inputchar
             if inputchar == "\r":
                 self.reading = float(val)
                 break
+            elif inputchar == "":
+                print "no reading"
+                return
             else:
-                ph += inputchar
+                val += inputchar
 
         print "read pH value:", self.reading
 
