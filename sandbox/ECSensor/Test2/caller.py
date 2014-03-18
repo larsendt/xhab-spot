@@ -18,7 +18,7 @@ if len(sys.argv) == 4:
         print "Analog pin2 must be between 0 and 5"
         sys.exit(1)
 else:
-    gpio_pin = 2
+    gpio_pin = 6
     Apin1 = 2
     Apin2 = 3
 
