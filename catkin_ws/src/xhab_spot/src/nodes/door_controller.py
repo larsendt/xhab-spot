@@ -6,6 +6,7 @@ import rospy
 import time
 from xhab_spot.msg import *
 import identity
+import door_motor
 
 PUB_DELAY = 15
 
@@ -25,9 +26,17 @@ class DoorController(object):
         if msg.open:
             print "door open!"
             self.door_open = True
+            door_motor.clock(5)
+            door_motor.stop()
         else:
             print "door closed!"
             self.door_open = False
+            door_motor.counterclock(5)
+            door_motor.stop()
+        
+        print "writing status"
+        with open("/home/xhab/data/door_status.txt", "w") as f:
+            f.write("1" if self.door_open else "0")
 
 
     def spin(self):
