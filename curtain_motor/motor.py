@@ -16,7 +16,7 @@ INPUT = "0"
 OUTPUT = "1"
 
 ## First, populate the arrays with file objects that we can use later.
-for i in range(0,2):
+for i in range(2,4):
     pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(i)))
     pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(i)))
 
