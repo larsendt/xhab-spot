@@ -1,5 +1,5 @@
 import time, os
-
+ 
 ## For simplicity's sake, we'll create a string for our paths.
 GPIO_MODE_PATH= os.path.normpath('/sys/devices/virtual/misc/gpio/mode/')
 GPIO_PIN_PATH=os.path.normpath('/sys/devices/virtual/misc/gpio/pin/')
