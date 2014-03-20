@@ -11,18 +11,18 @@ import ecwrapper
 
 PUB_DELAY = 15
 
-class ECSensor(object):
+class HumiditySensor(object):
     def __init__(self):
-        print "ECSensor init"
-        rospy.init_node("ECSensor")
+        print "HumiditySensor init"
+        rospy.init_node("HumiditySensor")
         subtopic = "/tasks/" + identity.get_spot_name() + "/ec"
-        ecpubtopic = "/data/" + identity.get_spot_name() + "/ec"
-        self.ecpub = rospy.Publisher(ecpubtopic, Data)
-        waterpubtopic = "/data/" + identity.get_spot_name() + "/water_temperature"
-        self.waterpub = rospy.Publisher(waterpubtopic, Data)
-        self.sub = rospy.Subscriber(subtopic, ECTask, self.callback)
-        self.ec_reading = 0.0
-        self.water_temp = 0.0
+        humiditypubtopic = "/data/" + identity.get_spot_name() + "/humidity"
+        self.humiditypub = rospy.Publisher(humiditypubtopic, Data)
+        airpubtopic = "/data/" + identity.get_spot_name() + "/air_temperature"
+        self.airpub = rospy.Publisher(airpubtopic, Data)
+        self.sub = rospy.Subscriber(subtopic, HumidityTask, self.callback)
+        self.humidity_reading = 0.0
+        self.air_temp = 0.0
         
 
     def callback(self, msg):
@@ -36,7 +36,7 @@ class ECSensor(object):
         print "read water temp:", self.water_temp
 
     def spin(self):
-        print "ECSensor listening"
+        print "HumiditySensor listening"
         while not rospy.is_shutdown():
             pubmsg = Data()
             pubmsg.source = identity.get_spot_name()
@@ -55,7 +55,7 @@ class ECSensor(object):
 
 if __name__ == "__main__":
     try:
-        p = ECSensor()
+        p = HumiditySensor()
         p.spin()
     except rospy.ROSInterruptException:
         pass

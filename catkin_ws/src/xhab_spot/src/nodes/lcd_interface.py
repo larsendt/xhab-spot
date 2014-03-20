@@ -56,6 +56,8 @@ def door_change_request():
     msg.spot_id = identity.get_spot_name()
     msg.timestamp = rospy.Time.now()
     msg.open = newstatus
+    DOOR_PUB.publish(msg)
+
 
 def light_time_request():
     print "light_time_request"
