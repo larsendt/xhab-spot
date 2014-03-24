@@ -147,7 +147,7 @@ class EventProcessor(pyinotify.ProcessEvent):
             func = FILES_TO_MONITOR[event.name]
             func()
         else:
-            print "unknown event name:", event.name
+            pass
 
 
 def setup_notify():
