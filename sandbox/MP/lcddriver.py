@@ -139,6 +139,7 @@ class lcd:
         # ********** HOME *********
         # ********** HOME *********
         # ********** HOME *********
+        state = self.state
         if state == "HOME":
             if M == 1:
                 if self.selection == 1:
