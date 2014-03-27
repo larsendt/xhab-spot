@@ -8,6 +8,7 @@ import time
 import random
 import serial
 import ecwrapper
+import pins
 
 PUB_DELAY = 15
 
@@ -23,17 +24,18 @@ class ECSensor(object):
         self.sub = rospy.Subscriber(subtopic, ECTask, self.callback)
         self.ec_reading = 0.0
         self.water_temp = 0.0
+        sys.stdout.flush()
         
-
     def callback(self, msg):
         print "got msg, target =", msg.target
-        gpio_pin = 6
-        Apin1 = 2
-        Apin2 = 3
+        gpio_pin = pins.GPIO_EC_PIN
+        Apin1 = pins.ADC_EC_PIN
+        Apin2 = pins.ADC_WATER_TEMP_PIN
         self.ec_reading, self.water_temp = ecwrapper.sensorData_read(gpio_pin, Apin1, Apin2)
         
         print "read EC value:", self.ec_reading
         print "read water temp:", self.water_temp
+        sys.stdout.flush()
 
     def spin(self):
         print "ECSensor listening"
