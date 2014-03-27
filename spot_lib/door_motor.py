@@ -1,4 +1,5 @@
 import time, os
+import pins
  
 ## For simplicity's sake, we'll create a string for our paths.
 GPIO_MODE_PATH= os.path.normpath('/sys/devices/virtual/misc/gpio/mode/')
@@ -16,9 +17,10 @@ INPUT = "0"
 OUTPUT = "1"
 
 ## First, populate the arrays with file objects that we can use later.
-for i in range(14,16):
-    pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(i)))
-    pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(i)))
+pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(pins.GPIO_DOOR_MOTOR_OPEN)))
+pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(pins.GPIO_DOOR_MOTOR_OPEN)))
+pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(pins.GPIO_DOOR_MOTOR_CLOSE)))
+pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(pins.GPIO_DOOR_MOTOR_CLOSE)))
 
 ## Make all the pins outputs
 for pin in pinMode:
