@@ -17,6 +17,12 @@ def lights_msg(on):
     msg.reds_on = True
     return msg
 
+def camera_msg():
+    msg = CameraTask()
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
 def door_msg(door_open):
     msg = DoorTask()
     msg.spot_id = identity.get_spot_name()
@@ -78,6 +84,9 @@ class TaskList(spot_node.SPOTNode):
             elif cmd == "ph":
                 msg = ph_msg()
                 topic = "ph"
+            elif cmd == "camera":
+                msg = camera_msg()
+                topic = "camera"
             else:
                 print "Unknown message!"
                 continue
