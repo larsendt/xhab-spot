@@ -7,7 +7,9 @@ import rospy
 from xhab_spot.msg import *
 import identity
 import time
+import captureFrame as cf
 
+PIC_DIR = "/home/xhab/pictures/"
 PUB_DELAY = 15
 
 class CameraController(object):
@@ -16,12 +18,26 @@ class CameraController(object):
         rospy.init_node("CameraController")
         subtopic = "/tasks/" + identity.get_spot_name() + "/camera"
         pubtopic = "/data/" + identity.get_spot_name() + "/camera"
-        self.pub = rospy.Publisher(pubtopic, Data)
+        self.pub = rospy.Publisher(pubtopic, CameraData)
         self.sub = rospy.Subscriber(subtopic, CameraTask, self.callback)
 
     def callback(self, msg):
         print "got msg, target =", msg.target
-        print "Camera take photo!"  
+        img = cf.capture_stream(PIC_DIR)
+        print "Captured image:", img
+
+        pubmsg = CameraData()
+        pubmsg.source = identity.get_spot_name()
+        pubmsg.timestamp = rospy.Time.now()
+        pubmsg.filename = img
+        pubmsg.encoding = "PPM"
+       
+        with open(img, "rb") as f:
+            pubmsg.photo_data = f.read()
+
+        print "Photo is %d bytes" % len(pubmsg.photo_data)
+
+        self.pub.publish(pubmsg)
 
     def spin(self):
         print "CameraController listening"
