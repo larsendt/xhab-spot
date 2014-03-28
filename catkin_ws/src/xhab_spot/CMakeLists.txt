@@ -25,6 +25,7 @@ add_message_files(
   Alert.msg
   BatteryTask.msg
   CameraTask.msg
+  CameraData.msg
   DoorTask.msg
   Data.msg
   ECTask.msg

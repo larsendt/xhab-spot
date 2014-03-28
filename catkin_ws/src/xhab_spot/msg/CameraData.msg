@@ -1,5 +1,5 @@
 string source
-string property
 time timestamp
-string encoding = JPG
+string filename
+string encoding
 uint8[] photo_data
