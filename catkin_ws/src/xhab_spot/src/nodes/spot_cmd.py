@@ -30,6 +30,12 @@ def ph_msg():
     msg.timestamp = rospy.Time.now()
     return msg
 
+def camera_msg():
+    msg = CameraTask()
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
 def ec_msg():
     msg = ECTask()
     msg.spot_id = identity.get_spot_name()
@@ -123,6 +129,9 @@ class TaskList(spot_node.SPOTNode):
                 angle = float(cmd.split(" ")[1])
                 msg = rotation_msg(angle)
                 topic = "rotation"
+            elif cmd == "camera":
+                msg = camera_msg()
+                topic = "camera"
             else:
                 print "Unknown message!"
                 continue
