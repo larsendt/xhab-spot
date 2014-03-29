@@ -36,8 +36,20 @@ def ph_msg():
     msg.timestamp = rospy.Time.now()
     return msg
 
+def camera_msg():
+    msg = CameraTask()
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
 def ec_msg():
     msg = ECTask()
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
+def water_level_msg():
+    msg = WaterLevelTask()
     msg.spot_id = identity.get_spot_name()
     msg.timestamp = rospy.Time.now()
     return msg
@@ -48,7 +60,27 @@ def battery_msg():
     msg.timestamp = rospy.Time.now()
     return msg
 
-MESSAGE_MAP = {"lights":lights_msg, "ph":ph_msg, "battery":battery_msg, "ec":ec_msg, "door":door_msg}
+def pump_msg(on):
+    msg = PumpTask()
+    msg.on = on
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
+def fan_msg(on):
+    msg = FanTask()
+    msg.on = on
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
+def rotation_msg(angle):
+    msg = RotationTask()
+    msg.angle = angle
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+    
 
 class TaskList(spot_node.SPOTNode):
     def __init__(self):
@@ -84,6 +116,25 @@ class TaskList(spot_node.SPOTNode):
             elif cmd == "ph":
                 msg = ph_msg()
                 topic = "ph"
+            elif cmd == "pump on":
+                msg = pump_msg(True)
+                topic = "pump"
+            elif cmd == "pump off":
+                msg = pump_msg(False)
+                topic = "pump"
+            elif cmd == "fan on":
+                msg = fan_msg(True)
+                topic = "fan"
+            elif cmd == "fan off":
+                msg = fan_msg(False)
+                topic = "fan"
+            elif cmd == "water level":
+                msg = water_level_msg()
+                topic = "water_level"
+            elif cmd.startswith("rotation"):
+                angle = float(cmd.split(" ")[1])
+                msg = rotation_msg(angle)
+                topic = "rotation"
             elif cmd == "camera":
                 msg = camera_msg()
                 topic = "camera"

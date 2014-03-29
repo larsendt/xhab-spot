@@ -17,10 +17,10 @@ INPUT = "0"
 OUTPUT = "1"
 
 ## First, populate the arrays with file objects that we can use later.
-pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(pins.GPIO_DOOR_MOTOR_OPEN)))
-pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(pins.GPIO_DOOR_MOTOR_OPEN)))
-pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(pins.GPIO_DOOR_MOTOR_CLOSE)))
-pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(pins.GPIO_DOOR_MOTOR_CLOSE)))
+pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(pins.GPIO_ROTATION_LEFT)))
+pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(pins.GPIO_ROTATION_LEFT)))
+pinMode.append(os.path.join(GPIO_MODE_PATH, 'gpio'+str(pins.GPIO_ROTATION_RIGHT)))
+pinData.append(os.path.join(GPIO_PIN_PATH, 'gpio'+str(pins.GPIO_ROTATION_RIGHT)))
 
 ## Make all the pins outputs
 for pin in pinMode:
