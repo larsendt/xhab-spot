@@ -52,6 +52,7 @@ class ECSensor(object):
             pubmsg.value = self.water_temp
             self.waterpub.publish(pubmsg)
             print "Published water temp:", self.water_temp
+            sys.stdout.flush()
             time.sleep(PUB_DELAY)
 
 
