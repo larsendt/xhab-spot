@@ -84,6 +84,9 @@ class Service(object):
             self.stderr_thread.join()
             self.is_alive = False
             print "Marked service as not alive"
+            print "Attempting to restart service"
+            self.run()
+            print "Hopefully restarted service"
 
 
 def start_roscore():
