@@ -143,7 +143,7 @@ ROS_NODES = ["battery_node.py",
 CMDS = map(lambda x: "rosrun xhab_spot " + x, ROS_NODES)
 SERVICES = map(lambda x: Service(x), CMDS)
 
-def check_already_running():
+def check_already_running(interactive):
     otherproc = None
     for proc in psutil.process_iter():
         if "launch_spot.py" in " ".join(proc.cmdline) and proc.name == "python":
@@ -156,12 +156,15 @@ def check_already_running():
     
     print "Found another SPOT process:", proc.pid
     print "Self is:", os.getpid()
-    print "Type 'y' to shut down other process, 'n' to exit"
-    inp = ""
-    while inp != "y" and inp != "n":
-        inp = raw_input("[y/n] ")
+    if interactive:
+        print "Type 'y' to shut down other process, 'n' to exit"
+        inp = ""
+        while inp != "y" and inp != "n":
+            inp = raw_input("[y/n] ")
+    else:
+        inp = "y"
 
-    if inp[0] == "y":
+    if inp == "y":
         print "Terminating other process..."
         os.kill(proc.pid, signal.SIGINT)
         time.sleep(3)
@@ -170,10 +173,43 @@ def check_already_running():
         sys.exit(0)
 
 
+def usage():
+    print """Usage: %s <opts>
+Options:
+    --no-interactive              Don't prompt the user (will auto-kill any 
+                                  other SPOT instances)
+    --remote-rosmaster <ip addr>  Don't launch a local ROS master, instead 
+                                  use one on specified IP address""" % (sys.argv[0])
+
+
 def main():
-    check_already_running()
-    roscore_proc = start_roscore()
+    local_rosmaster = True
+    interactive = True
+    if len(sys.argv) == 2 and sys.argv[1] == "--no-interactive":
+        interactive = False
+    elif len(sys.argv) == 3 and sys.argv[1] == "--remote-rosmaster":
+        local_rosmaster = False
+    elif len(sys.argv) > 1:
+        usage()
+        return 
+
+    # check to see if another instance is already running
+    check_already_running(interactive)
+
+    if local_rosmaster:
+        # launch a local ros master
+        roscore_proc = start_roscore()
+    else:
+        # use a remote ros master with the specified ip
+        ip = sys.argv[2]
+        uri = "http://%s:11311" % ip
+        print "ROS_MASTER_URI is:", uri
+        os.putenv("ROS_MASTER_URI", uri)
+
+    # start the LCD driver stuff
     lcd_proc = start_lcd_driver()
+
+
     print "Launching %d services" % len(SERVICES)
     map(lambda x: x.run(), SERVICES)
     print "Monitoring services"
@@ -184,7 +220,8 @@ def main():
     except KeyboardInterrupt:
         print "Terminating all services"
         map(lambda x: x.kill(), SERVICES)
-        stop_roscore(roscore_proc)
+        if local_rosmaster:
+            stop_roscore(roscore_proc)
         stop_lcd_driver(lcd_proc)
         print "Done"
 
