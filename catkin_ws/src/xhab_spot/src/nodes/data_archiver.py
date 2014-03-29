@@ -31,13 +31,22 @@ def insert_data(source, prop, timestamp, value):
 
 def store_latest(prop, value):
     path = "/home/xhab/data/" + prop + ".txt"
+    if prop == "battery_level":
+        # input is 0-1, output is 0-100
+        fmt_value = int(value) * 100
+    elif prop == "water_level":
+        fmt_value = int(value)
+    else:
+        fmt_value = int(value)
+
     with open(path, "w") as f:
-        f.write(str(value) + "\n")
-    print "Wrote %.1f to %s" % (value, path)
+        f.write(str(fmt_value) + "\n")
+    print "Wrote %s to %s" % (fmt_value, path)
 
 def init_latest_files():
     for prop in spot_topics.PROPERTIES:
-        store_latest(prop, 0.0)
+        if not os.path.exists("/home/xhab/data/" + prop + ".txt"):
+            store_latest(prop, 0)
 
 class DataArchiver(object):
     def __init__(self):
