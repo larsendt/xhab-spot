@@ -92,27 +92,42 @@ def start_roscore():
             if "rosmaster" in item or "roscore" in item:
                 print "ROS Core is already running"
                 return None
+    print "Starting ROS Core"
     return sp.Popen("roscore", close_fds=True, stdout=sp.PIPE, stderr=sp.PIPE)
 
 
 def stop_roscore(roscore_proc):
     if roscore_proc:
         proc = psutil.Process(roscore_proc.pid)
+        print "Killing ROS Core:", proc
         roscore_proc.kill()
         roscore_proc.wait()
-        print "Killed ROS Core:", proc
     else:
         for proc in psutil.process_iter():
             for item in proc.cmdline:
                 if "roscore" in item or "rosmaster" in item:
+                    print "Killing ROS Core:", proc
                     os.kill(proc.pid, signal.SIGKILL)
-                    print "Killed ROS Core:", proc
 
+
+def start_lcd_driver():
+    print "Starting LCD driver"
+    return sp.Popen(["python", "/home/xhab/xhab-spot/spot_lib/lcd_menu.py"], close_fds=True, stdout=sp.PIPE, stderr=sp.PIPE)
+
+def stop_lcd_driver(proc):
+    print "Killing lcd interface:", psutil.Process(proc.pid)
+    proc.kill()
+    proc.wait()
+    for p in psutil.process_iter():
+        for item in p.cmdline:
+            if "interrupt" in item:
+                print "killling interrupt process", p
+                os.kill(p.pid, signal.SIGKILL)
 
 
 ROS_NODES = ["battery_node.py",
              "camera_controller.py",
-             #"data_archiver.py",
+             "data_archiver.py",
              "door_controller.py",
              "ec_sensor.py",
              "fan_controller.py",
@@ -127,8 +142,9 @@ ROS_NODES = ["battery_node.py",
 CMDS = map(lambda x: "rosrun xhab_spot " + x, ROS_NODES)
 SERVICES = map(lambda x: Service(x), CMDS)
 
-if __name__ == "__main__":
+def main():
     roscore_proc = start_roscore()
+    lcd_proc = start_lcd_driver()
     print "Launching %d services" % len(SERVICES)
     map(lambda x: x.run(), SERVICES)
     print "Monitoring services"
@@ -140,7 +156,9 @@ if __name__ == "__main__":
         print "Terminating all services"
         map(lambda x: x.kill(), SERVICES)
         stop_roscore(roscore_proc)
+        stop_lcd_driver(lcd_proc)
         print "Done"
 
 
-
+if __name__ == "__main__":
+    main()
