@@ -7,9 +7,9 @@ import rospy
 from xhab_spot.msg import *
 import identity
 import time
-import captureFrame as cf
+import camera
+import os
 
-PIC_DIR = "/home/xhab/pictures/"
 PUB_DELAY = 15
 
 class CameraController(object):
@@ -23,14 +23,19 @@ class CameraController(object):
 
     def callback(self, msg):
         print "got msg, target =", msg.target
-        img = cf.capture_stream(PIC_DIR)
+        img = camera.snap_frame()
+        if img is None:
+            print "Failed to capture image!"
+            return
+
         print "Captured image:", img
 
         pubmsg = CameraData()
         pubmsg.source = identity.get_spot_name()
         pubmsg.timestamp = rospy.Time.now()
         pubmsg.filename = img
-        pubmsg.encoding = "PPM"
+        pubmsg.encoding = "JPG"
+        pubmsg.property = os.path.basename(img)
        
         with open(img, "rb") as f:
             pubmsg.photo_data = f.read()
@@ -38,6 +43,7 @@ class CameraController(object):
         print "Photo is %d bytes" % len(pubmsg.photo_data)
 
         self.pub.publish(pubmsg)
+        print "published msg"
 
     def spin(self):
         print "CameraController listening"

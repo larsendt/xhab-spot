@@ -50,9 +50,12 @@ class DataArchiver(object):
 
     def data_callback(self, message):
         print "archiver got:", message.source, message.property
-        insert_data(message.source, message.property, message.timestamp, message.value)
-        store_latest(message.property, message.value)
-        print "inserted data"
+        if message.property.startswith("snap"):
+            insert_data(message.source, message.property, message.timestamp, 0.0)
+        else:
+            insert_data(message.source, message.property, message.timestamp, message.value)
+            store_latest(message.property, message.value)
+            print "inserted data"
 
     def spin(self):
         print "DataArchiver listening"

@@ -16,7 +16,7 @@ TOPICS = ["battery", "camera", "door", "ec", "fan", "humidity", "lights",
 PROPERTIES = ["battery_charging", "battery_level", "battery_full", "door_status", 
               "ec_reading", "fan_on", "humidity_reading", "lights_brightness", 
               "lights_whites_on", "lights_reds_on", "ph_reading", "pump_on", 
-              "rotation_angle", "air_temperature", "water_temperature", "water_level"
+              "rotation_angle", "air_temperature", "water_temperature", "water_level",
               "valve_status"]
 
 
@@ -40,5 +40,8 @@ def make_data_subscribers(base_topic, callback):
     tt = map(lambda x: (x, Data), TOPICS)
     subs = {}
     for name, msg in tt:
-        subs [name] = rospy.Subscriber(base_topic + "/" + name, msg, callback)
+        if name == "camera":
+            subs[name] = rospy.Subscriber(base_topic + "/" + name, CameraData, callback)
+        else:
+            subs[name] = rospy.Subscriber(base_topic + "/" + name, msg, callback)
     return subs 
