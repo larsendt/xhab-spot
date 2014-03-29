@@ -112,7 +112,8 @@ def stop_roscore(roscore_proc):
 
 def start_lcd_driver():
     print "Starting LCD driver"
-    return sp.Popen(["python", "/home/xhab/xhab-spot/spot_lib/lcd_menu.py"], close_fds=True, stdout=sp.PIPE, stderr=sp.PIPE)
+    proc = sp.Popen(["python", "/home/xhab/xhab-spot/spot_lib/lcd_menu.py"], close_fds=True, stdout=sp.PIPE, stderr=sp.PIPE)
+    return proc
 
 def stop_lcd_driver(proc):
     print "Killing lcd interface:", psutil.Process(proc.pid)
@@ -142,7 +143,35 @@ ROS_NODES = ["battery_node.py",
 CMDS = map(lambda x: "rosrun xhab_spot " + x, ROS_NODES)
 SERVICES = map(lambda x: Service(x), CMDS)
 
+def check_already_running():
+    otherproc = None
+    for proc in psutil.process_iter():
+        if "launch_spot.py" in " ".join(proc.cmdline) and proc.name == "python":
+            if proc.pid != os.getpid():
+                otherproc = proc
+                break
+
+    if otherproc is None:
+        return
+    
+    print "Found another SPOT process:", proc.pid
+    print "Self is:", os.getpid()
+    print "Type 'y' to shut down other process, 'n' to exit"
+    inp = ""
+    while inp != "y" and inp != "n":
+        inp = raw_input("[y/n] ")
+
+    if inp[0] == "y":
+        print "Terminating other process..."
+        os.kill(proc.pid, signal.SIGINT)
+        time.sleep(3)
+    else:
+        print "Exiting"
+        sys.exit(0)
+
+
 def main():
+    check_already_running()
     roscore_proc = start_roscore()
     lcd_proc = start_lcd_driver()
     print "Launching %d services" % len(SERVICES)

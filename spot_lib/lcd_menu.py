@@ -2,7 +2,7 @@
 
 # The contents of this file will have to go in the main start up file.
 
-PATH = "home/xhab/data/"
+PATH = "/home/xhab/data/"
 
 import lcddriver
 import time
@@ -12,9 +12,11 @@ import time
 import pyinotify
 import os
 
+BASE_PATH = "/home/xhab/xhab-spot/spot_lib/"
+
 pid = os.fork()
 if pid == 0:
-    os.execvp("./interrupt", ["./interrupt"])
+    os.execvp(BASE_PATH + "interrupt", [BASE_PATH + "interrupt"])
 
 lcd = lcddriver.lcd()
 
