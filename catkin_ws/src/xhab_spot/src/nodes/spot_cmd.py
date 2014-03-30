@@ -8,11 +8,11 @@ import identity
 import spot_topics
 
 
-def lights_msg(on):
+def lights_msg(brightness):
     msg = LightsTask()
     msg.spot_id = identity.get_spot_name()
     msg.timestamp = rospy.Time.now()
-    msg.brightness = 1.0 if on else 0.0
+    msg.brightness = brightness
     msg.whites_on = True
     msg.reds_on = True
     return msg
@@ -82,24 +82,21 @@ def rotation_msg(angle):
     return msg
     
 
-class TaskList(spot_node.SPOTNode):
+class SPOTCmd(spot_node.SPOTNode):
     def __init__(self):
-        super(TaskList, self).__init__()
-        print "TaskList init"
+        super(SPOTCmd, self).__init__()
+        print "SPOTCmd init"
         pub_topic = "/tasks/" + identity.get_spot_name()
         self.publishers = spot_topics.make_task_publishers(pub_topic)
-        rospy.init_node("TaskList")
+        rospy.init_node("SPOTCmd")
 
 
     def spin(self):
-        print "TaskList listening"
         while not rospy.is_shutdown():
             cmd = raw_input("cmd> ")
-            if cmd == "lights on":
-                msg = lights_msg(True)
-                topic = "lights"
-            elif cmd == "lights off":
-                msg = lights_msg(False)
+            if cmd.startswith("lights"):
+                brightness = float(cmd.split(" ")[1])
+                msg = lights_msg(brightness)
                 topic = "lights"
             elif cmd == "door open":
                 msg = door_msg(True)
@@ -149,7 +146,7 @@ class TaskList(spot_node.SPOTNode):
                 
 
 if __name__ == "__main__":
-    t = TaskList()
+    t = SPOTCmd()
     try:
         t.spin()
     except rospy.ROSInterruptException:
