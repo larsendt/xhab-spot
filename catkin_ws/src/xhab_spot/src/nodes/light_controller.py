@@ -21,10 +21,10 @@ class LightController(object):
         self.sub = rospy.Subscriber(subtopic, LightsTask, self.callback)
         self.brightness = 0.75
         self.reds_on = False
-        self.whites_on = True
         self.disabled = False
         self.disable_start = 0
         self.disable_stop = 0
+        sys.stdout.flush()
 
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -32,10 +32,11 @@ class LightController(object):
         self.brightness = msg.brightness
         print "brightness:", self.brightness
 
-        self.whites_on = msg.whites_on
-        print "whites on:", self.whites_on
         self.reds_on = msg.reds_on
         print "reds on:", self.reds_on
+
+        spot_pwm.set_pwm_pin(pins.GPIO_LIGHTS_BRIGHTNESS_PIN, self.brightness)
+        spot_gpio.set_pin(pins.GPIO_RED_LIGHTS_PIN, self.reds_on)
 
         if msg.disable_minutes > 0:
             print "disabled for %d minutes" % msg.disable_minutes
@@ -53,6 +54,7 @@ class LightController(object):
             if self.disabled:
                 print "lights no longer disabled!"
             self.disabled = False
+        sys.stdout.flush()
 
 
     def spin(self):
@@ -79,11 +81,6 @@ class LightController(object):
             self.pub.publish(msg)
             print "Published lights reds on:", msg.value
 
-            msg.property = "lights_whites_on"
-            msg.value = 1.0 if self.whites_on else 0.0
-            self.pub.publish(msg)
-            print "Published lights whites on:", msg.value
-
             if self.disabled:
                 diff = (self.disable_stop - time.time()) / 60.0
                 alertmsg = Alert()
@@ -92,6 +89,7 @@ class LightController(object):
                 alertmsg.alert_text = "Lights disabled for another %.1f minutes" % diff
                 self.alert_pub.publish(alertmsg)
 
+            sys.stdout.flush()
             time.sleep(PUB_DELAY)
 
 if __name__ == "__main__":
