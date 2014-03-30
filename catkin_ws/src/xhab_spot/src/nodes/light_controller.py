@@ -7,6 +7,7 @@ import rospy
 from xhab_spot.msg import *
 import identity
 import time
+import spot_pwm
 
 PUB_DELAY = 15
 
