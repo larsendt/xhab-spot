@@ -1,0 +1,43 @@
+DIR=$(shell pwd)/../
+
+INCS = -I.\
+        -I$(DIR) \
+        -I$(DIR)/hardware \
+        -I$(DIR)/hardware/arduino \
+        -I$(DIR)/hardware/arduino/cores \
+        -I$(DIR)/hardware/arduino/cores/arduino \
+        -I$(DIR)/hardware/arduino/variants \
+        -I$(DIR)/hardware/arduino/variants/sunxi \
+        -I$(DIR)/libraries \
+        -I$(DIR)/libraries/Serial \
+        -I$(DIR)/libraries/SPI \
+	-I$(DIR)/libraries/Wire \
+	-I$(DIR)/libraries/LiquidCrystal \
+	-I$(DIR)/libraries/PN532_SPI 
+
+
+
+LIBS=../libarduino.a
+TARGET=../output/test
+
+C = sht.cpp
+
+OBJS = sht
+
+DEPS = SHT1x.h
+
+OBJ = SHT1x.o
+
+SHT = SHT1x.cpp
+
+$(OBJ): $(SHT) $(DEPS)
+	$(CXX) $(INCS) -c -o $@ $< 
+
+     
+all: 
+	@mkdir -p $(TARGET)
+	@for i in $(OBJS); do echo "$(CXX) -Wall $(INCS) -fPIC $(C) $(OBJ) -shared -o $(TARGET)/$$i $(LIBS)" && $(CXX) -Wall $(INCS) $(C) $(OBJ) -o $$i  $(LIBS); done
+
+clean:
+	@for i in $(OBJS); do rm -f $$i; done
+	rm -rf $(OBJ)
