@@ -29,7 +29,8 @@ add_message_files(
   DoorTask.msg
   Data.msg
   ECTask.msg
-  FanTask.msg
+  EPSFanTask.msg
+  PlantFanTask.msg
   HumidityTask.msg
   LightsTask.msg
   PHTask.msg

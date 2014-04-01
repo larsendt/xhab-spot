@@ -8,13 +8,12 @@ import identity
 import spot_topics
 
 
-def lights_msg(brightness):
+def lights_msg(brightness, reds):
     msg = LightsTask()
     msg.spot_id = identity.get_spot_name()
     msg.timestamp = rospy.Time.now()
     msg.brightness = brightness
-    msg.whites_on = True
-    msg.reds_on = True
+    msg.reds_on = reds
     return msg
 
 def camera_msg():
@@ -67,8 +66,15 @@ def pump_msg(on):
     msg.timestamp = rospy.Time.now()
     return msg
 
-def fan_msg(on):
-    msg = FanTask()
+def plant_fan_msg(on):
+    msg = PlantFanTask()
+    msg.on = on
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
+def eps_fan_msg(on):
+    msg = EPSFanTask()
     msg.on = on
     msg.spot_id = identity.get_spot_name()
     msg.timestamp = rospy.Time.now()
@@ -96,7 +102,8 @@ class SPOTCmd(spot_node.SPOTNode):
             cmd = raw_input("cmd> ")
             if cmd.startswith("lights"):
                 brightness = float(cmd.split(" ")[1])
-                msg = lights_msg(brightness)
+                on = True if cmd.split(" ")[2] == "reds_on" else False
+                msg = lights_msg(brightness, on)
                 topic = "lights"
             elif cmd == "door open":
                 msg = door_msg(True)
@@ -119,12 +126,18 @@ class SPOTCmd(spot_node.SPOTNode):
             elif cmd == "pump off":
                 msg = pump_msg(False)
                 topic = "pump"
-            elif cmd == "fan on":
-                msg = fan_msg(True)
-                topic = "fan"
-            elif cmd == "fan off":
-                msg = fan_msg(False)
-                topic = "fan"
+            elif cmd == "eps fan on":
+                msg = eps_fan_msg(True)
+                topic = "eps_fan"
+            elif cmd == "eps fan off":
+                msg = eps_fan_msg(False)
+                topic = "eps_fan"
+            elif cmd == "plant fan on":
+                msg = plant_fan_msg(True)
+                topic = "plant_fan"
+            elif cmd == "plant fan off":
+                msg = plant_fan_msg(False)
+                topic = "plant_fan"
             elif cmd == "water level":
                 msg = water_level_msg()
                 topic = "water_level"
