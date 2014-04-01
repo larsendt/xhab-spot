@@ -40,6 +40,7 @@ class LightController(object):
         spot_gpio.set_pin(pins.GPIO_RED_LIGHTS_PIN, self.reds_on)
 
         if msg.disable_minutes > 0:
+            spot_pwm.set_pwm_pin(pins.GPIO_LIGHTS_BRIGHTNESS_PIN, 0.0)
             print "disabled for %d minutes" % msg.disable_minutes
             seconds = msg.disable_minutes * 60
             self.disable_start = time.time()
@@ -55,6 +56,7 @@ class LightController(object):
             if self.disabled:
                 print "lights no longer disabled!"
             self.disabled = False
+            spot_pwm.set_pwm_pin(pins.GPIO_LIGHTS_BRIGHTNESS_PIN, self.brightness)
         sys.stdout.flush()
 
 
@@ -64,6 +66,7 @@ class LightController(object):
             if self.disabled:
                 if time.time() > self.disable_stop:
                     print "lights no longer disabled!"
+                    spot_pwm.set_pwm_pin(pins.GPIO_LIGHTS_BRIGHTNESS_PIN, self.brightness)
                     self.disabled = False
 
             msg = Data()
