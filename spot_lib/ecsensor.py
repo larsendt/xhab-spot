@@ -34,9 +34,9 @@ def set_pin(pin, on):
         print "Pin must be between 0 and 13 (inclusive)"
 
 def read_analog(Apin):
-    if 0<= Apin <= 6:
+    if 0<= Apin <= 5:
         fname = APIN_PATH + str(Apin)
-        with open(fname, "r+") as f:
-            val = f.read()[5:-1]
+        with open(fname, "r") as f:
+            val = int(f.read()[5:-1])
             f.close()
             return val

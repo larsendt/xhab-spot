@@ -7,6 +7,7 @@ import identity
 import time
 import random
 import battery_sensor
+import pins
 
 PUB_DELAY = 15
 
@@ -24,8 +25,8 @@ class BatterySensor(object):
 
     def callback(self, msg):
         print "got msg, target =", msg.target
-        self.charging = battery_sensor.is_charging(0, 1)
-        self.level = battery_sensor.battery_level(2)
+        self.charging = battery_sensor.is_charging(pins.ADC_BATTERY_STATUS_PIN_1, pins.ADC_BATTERY_STATUS_PIN_2)
+        self.level = battery_sensor.battery_level(pins.ADC_BATTERY_LEVEL_PIN)
         self.level = min(1.0, self.level)
         self.full = True if self.level >= 1.0 else False
 

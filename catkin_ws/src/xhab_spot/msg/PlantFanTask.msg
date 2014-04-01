@@ -1,4 +1,4 @@
 string spot_id
-string target = fan
+string target = plant_fan
 time timestamp
 bool on

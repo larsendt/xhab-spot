@@ -113,3 +113,5 @@ fi
 source ~/xhab-spot/catkin_ws/devel/setup.bash
 export PATH=/sbin:/usr/sbin:/usr/local/sbin:$PATH
 export PYTHONPATH=~/xhab-spot/spot_lib/:$PYTHONPATH
+
+export PYTHONUNBUFFERED=1

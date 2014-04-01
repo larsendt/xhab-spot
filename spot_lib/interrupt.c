@@ -34,13 +34,13 @@ static const char *swirq_dev = "/dev/swirq";
 #define INTERRUPT_FILE "./interrupt.txt"
 #define BUTTONS_FILE "./buttons.txt"
 
-#define MPIN3 "/sys/devices/virtual/misc/gpio/mode/gpio3"
+#define MPIN3 "/sys/devices/virtual/misc/gpio/mode/gpio12"
 #define MPIN4 "/sys/devices/virtual/misc/gpio/mode/gpio4"
-#define MPIN5 "/sys/devices/virtual/misc/gpio/mode/gpio5"
+#define MPIN5 "/sys/devices/virtual/misc/gpio/mode/gpio13"
 
-#define PIN3 "/sys/devices/virtual/misc/gpio/pin/gpio3"
+#define PIN3 "/sys/devices/virtual/misc/gpio/pin/gpio12"
 #define PIN4 "/sys/devices/virtual/misc/gpio/pin/gpio4"
-#define PIN5 "/sys/devices/virtual/misc/gpio/pin/gpio5"
+#define PIN5 "/sys/devices/virtual/misc/gpio/pin/gpio13"
 
 int main(int _argc, char **_argv) {     
     int fd;        

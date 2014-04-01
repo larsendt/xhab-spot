@@ -143,7 +143,7 @@ Then add the following line (you'll need to know vim)
 
 ## Load appropriate kernel modules
 
-Look in /etc/modules, and make sure that `gpio`, `pwm`, and `adc` are in the
+Look in /etc/modules, and make sure that `gpio`, `pwm`, `adc` and `sw_interrupt` are in the
 file. If not, add them, one per line.
 
 For the changes to take effect, you will need to reboot, or run
@@ -151,6 +151,20 @@ For the changes to take effect, you will need to reboot, or run
     sudo modprobe gpio
     sudo modprobe pwm
     sudo modprobe adc
+    sudo modprobe sw_interrupt
+
+## Make the interrupt device readable by all users
+
+By default `/dev/swirq` is readable only by root. This needs to be changed so that
+all users can read/write/execute it.
+
+    sudo chmod 777 /dev/swirq
+
+Then open /etc/rc.local and add the following line just before the last `exit 0`
+
+    chmod 777 /dev/swirq
+
+That's it!
 
 ## Things to install
 

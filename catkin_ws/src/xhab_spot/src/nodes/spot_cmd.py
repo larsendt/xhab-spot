@@ -8,13 +8,12 @@ import identity
 import spot_topics
 
 
-def lights_msg(on):
+def lights_msg(brightness, reds):
     msg = LightsTask()
     msg.spot_id = identity.get_spot_name()
     msg.timestamp = rospy.Time.now()
-    msg.brightness = 1.0 if on else 0.0
-    msg.whites_on = True
-    msg.reds_on = True
+    msg.brightness = brightness
+    msg.reds_on = reds
     return msg
 
 def camera_msg():
@@ -67,8 +66,15 @@ def pump_msg(on):
     msg.timestamp = rospy.Time.now()
     return msg
 
-def fan_msg(on):
-    msg = FanTask()
+def plant_fan_msg(on):
+    msg = PlantFanTask()
+    msg.on = on
+    msg.spot_id = identity.get_spot_name()
+    msg.timestamp = rospy.Time.now()
+    return msg
+
+def eps_fan_msg(on):
+    msg = EPSFanTask()
     msg.on = on
     msg.spot_id = identity.get_spot_name()
     msg.timestamp = rospy.Time.now()
@@ -82,24 +88,22 @@ def rotation_msg(angle):
     return msg
     
 
-class TaskList(spot_node.SPOTNode):
+class SPOTCmd(spot_node.SPOTNode):
     def __init__(self):
-        super(TaskList, self).__init__()
-        print "TaskList init"
+        super(SPOTCmd, self).__init__()
+        print "SPOTCmd init"
         pub_topic = "/tasks/" + identity.get_spot_name()
         self.publishers = spot_topics.make_task_publishers(pub_topic)
-        rospy.init_node("TaskList")
+        rospy.init_node("SPOTCmd")
 
 
     def spin(self):
-        print "TaskList listening"
         while not rospy.is_shutdown():
             cmd = raw_input("cmd> ")
-            if cmd == "lights on":
-                msg = lights_msg(True)
-                topic = "lights"
-            elif cmd == "lights off":
-                msg = lights_msg(False)
+            if cmd.startswith("lights"):
+                brightness = float(cmd.split(" ")[1])
+                on = True if cmd.split(" ")[2] == "reds_on" else False
+                msg = lights_msg(brightness, on)
                 topic = "lights"
             elif cmd == "door open":
                 msg = door_msg(True)
@@ -122,12 +126,18 @@ class TaskList(spot_node.SPOTNode):
             elif cmd == "pump off":
                 msg = pump_msg(False)
                 topic = "pump"
-            elif cmd == "fan on":
-                msg = fan_msg(True)
-                topic = "fan"
-            elif cmd == "fan off":
-                msg = fan_msg(False)
-                topic = "fan"
+            elif cmd == "eps fan on":
+                msg = eps_fan_msg(True)
+                topic = "eps_fan"
+            elif cmd == "eps fan off":
+                msg = eps_fan_msg(False)
+                topic = "eps_fan"
+            elif cmd == "plant fan on":
+                msg = plant_fan_msg(True)
+                topic = "plant_fan"
+            elif cmd == "plant fan off":
+                msg = plant_fan_msg(False)
+                topic = "plant_fan"
             elif cmd == "water level":
                 msg = water_level_msg()
                 topic = "water_level"
@@ -149,7 +159,7 @@ class TaskList(spot_node.SPOTNode):
                 
 
 if __name__ == "__main__":
-    t = TaskList()
+    t = SPOTCmd()
     try:
         t.spin()
     except rospy.ROSInterruptException:
