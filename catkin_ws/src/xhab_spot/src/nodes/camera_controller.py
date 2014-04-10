@@ -9,6 +9,7 @@ import identity
 import time
 import camera
 import os
+import initializer
 
 PUB_DELAY = 15
 

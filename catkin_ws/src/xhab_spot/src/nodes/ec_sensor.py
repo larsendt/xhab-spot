@@ -36,7 +36,7 @@ class ECSensor(object):
         
         print "read EC value:", self.ec_reading
         print "read water temp:", self.water_temp
-        initializer.put_value("ec_reading", self.ec_reading)
+        initializer.put_variable("ec_reading", self.ec_reading)
         initializer.put_variable("water_temp", self.water_temp)
 
     def spin(self):
