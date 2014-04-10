@@ -7,6 +7,7 @@ import time
 import pins
 from xhab_spot.msg import *
 import identity
+import initializer
 
 PUB_DELAY = 15
 
@@ -18,7 +19,8 @@ class PlantFanController(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/plant_fan"
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, PlantFanTask, self.callback)
-        self.fan_on = False
+        self.fan_on = initializer.get_variable("plant_fan_on", True)
+        self.callback(PlantFanTask())
 
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -27,6 +29,7 @@ class PlantFanController(object):
         spot_gpio.set_pin(pins.GPIO_PLANT_FAN, msg.on)
 
         print "writing status"
+        initializer.put_variable("plant_fan_on", self.fan_on)
         with open("/home/xhab/data/plant_fan_on.txt", "w") as f:
             f.write("1" if self.fan_on else "0")
 

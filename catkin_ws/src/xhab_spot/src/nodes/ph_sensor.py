@@ -7,6 +7,8 @@ import identity
 import time
 import random
 import serial
+import initializer
+import pins
 
 PUB_DELAY = 15
 
@@ -18,8 +20,10 @@ class PHSensor(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/ph"
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, PHTask, self.callback)
-        self.reading = 7.0
+        self.reading = initializer.get_variable("ph_reading", 7.0)
         self.port = serial.Serial('/dev/ttyS1', 38400, bytesize=8, parity='N', stopbits=1, timeout = 10)
+
+        self.callback(PHTask())
         
 
     def callback(self, msg):
@@ -37,6 +41,7 @@ class PHSensor(object):
             else:
                 val += inputchar
 
+        initializer.put_variable("ph_reading", self.reading)
         print "read pH value:", self.reading
 
     def spin(self):

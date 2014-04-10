@@ -34,13 +34,13 @@ static const char *swirq_dev = "/dev/swirq";
 #define INTERRUPT_FILE "./interrupt.txt"
 #define BUTTONS_FILE "./buttons.txt"
 
-#define MPIN3 "/sys/devices/virtual/misc/gpio/mode/gpio12"
+#define MPIN12 "/sys/devices/virtual/misc/gpio/mode/gpio12"
 #define MPIN4 "/sys/devices/virtual/misc/gpio/mode/gpio4"
-#define MPIN5 "/sys/devices/virtual/misc/gpio/mode/gpio13"
+#define MPIN13 "/sys/devices/virtual/misc/gpio/mode/gpio13"
 
-#define PIN3 "/sys/devices/virtual/misc/gpio/pin/gpio12"
+#define PIN12 "/sys/devices/virtual/misc/gpio/pin/gpio12"
 #define PIN4 "/sys/devices/virtual/misc/gpio/pin/gpio4"
-#define PIN5 "/sys/devices/virtual/misc/gpio/pin/gpio13"
+#define PIN13 "/sys/devices/virtual/misc/gpio/pin/gpio13"
 
 int main(int _argc, char **_argv) {     
     int fd;        
@@ -49,33 +49,33 @@ int main(int _argc, char **_argv) {
     int swIrqNum = 0;
     FILE *interrupt_file;
     FILE *buttons_file;
-    FILE *mpin3;
+    FILE *mpin12;
     FILE *mpin4;
-    FILE *mpin5;
-    FILE *pin3;
+    FILE *mpin13;
+    FILE *pin12;
     FILE *pin4;
-    FILE *pin5;
-    char val3[2];
+    FILE *pin13;
+    char val12[2];
     char val4[2];
-    char val5[2];
+    char val13[2];
     int read_counter = 0;
 
-    val3[1] = 0;
+    val12[1] = 0;
     val4[1] = 0;
-    val5[1] = 0;
+    val13[1] = 0;
 
 
     /////////////////////////////////////////////////////
     //                    Set Modes
     /////////////////////////////////////////////////////
-    mpin3 = fopen(MPIN3, "w");
-    if(mpin3 == NULL) {
+    mpin12 = fopen(MPIN12, "w");
+    if(mpin12 == NULL) {
         printf("Failed to open mode file for gpio3\n");
         return 1;
     }
 
-    fwrite("8", sizeof(char), sizeof("1"), mpin3);
-    fclose(mpin3);
+    fwrite("8", sizeof(char), sizeof("1"), mpin12);
+    fclose(mpin12);
 
     mpin4 = fopen(MPIN4, "w");
     if(mpin4 == NULL) {
@@ -86,22 +86,22 @@ int main(int _argc, char **_argv) {
     fwrite("8", sizeof(char), sizeof("1"), mpin4);
     fclose(mpin4);
 
-    mpin5 = fopen(MPIN5, "w");
-    if(mpin5 == NULL) {
+    mpin13 = fopen(MPIN13, "w");
+    if(mpin13 == NULL) {
         printf("Failed to open mode file for gpio5\n");
         return 1;
     }
 
-    fwrite("8", sizeof(char), sizeof("1"), mpin5);
-    fclose(mpin5);
+    fwrite("8", sizeof(char), sizeof("1"), mpin13);
+    fclose(mpin13);
 
     /////////////////////////////////////////////////////
     //             Set the interrupt func
     /////////////////////////////////////////////////////
     
     int irqPin1Func (void) {        
-        pin3 = fopen(PIN3, "r");
-        if(pin3 == NULL) {
+        pin12 = fopen(PIN12, "r");
+        if(pin12 == NULL) {
             printf("Failed to open pin file for gpio3\n");
             return 1;
         }
@@ -112,23 +112,23 @@ int main(int _argc, char **_argv) {
             return 1;
         }
         
-        pin5 = fopen(PIN5, "r");
-        if(pin5 == NULL) {
+        pin13 = fopen(PIN13, "r");
+        if(pin13 == NULL) {
             printf("Failed to open pin file for gpio5\n");
             return 1;
         }
 
-        fread(val3, 1, 1, pin3); 
+        fread(val12, 1, 1, pin12); 
         fread(val4, 1, 1, pin4); 
-        fread(val5, 1, 1, pin5); 
+        fread(val13, 1, 1, pin13); 
 
-        fclose(pin3);
+        fclose(pin12);
         fclose(pin4);
-        fclose(pin5);
+        fclose(pin13);
 
         read_counter += 1;
 
-        printf("(%d) read values '%c' '%c' '%c'\n", read_counter, *val3, *val4, *val5);
+        printf("(%d) read values '%c' '%c' '%c'\n", read_counter, *val12, *val4, *val13);
 
         interrupt_file = fopen(INTERRUPT_FILE, "w");
         if(interrupt_file == NULL) {
@@ -143,7 +143,7 @@ int main(int _argc, char **_argv) {
         }
 
         fprintf(interrupt_file, "1");
-        fprintf(buttons_file, "%c\n%c\n%c\n", *val3, *val4, *val5);
+        fprintf(buttons_file, "%c\n%c\n%c\n", *val12, *val4, *val13);
 
         fclose(interrupt_file);
         fclose(buttons_file);

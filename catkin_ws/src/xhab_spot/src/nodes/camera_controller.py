@@ -20,6 +20,7 @@ class CameraController(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/camera"
         self.pub = rospy.Publisher(pubtopic, CameraData)
         self.sub = rospy.Subscriber(subtopic, CameraTask, self.callback)
+        self.last_fname = initializer.get_variable("camera_last_fname", "")
 
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -36,6 +37,8 @@ class CameraController(object):
         pubmsg.filename = img
         pubmsg.encoding = "JPG"
         pubmsg.property = os.path.basename(img)
+
+        initializer.put_variable("camera_last_fname", img)
        
         with open(img, "rb") as f:
             pubmsg.photo_data = f.read()

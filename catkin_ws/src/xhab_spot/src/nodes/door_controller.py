@@ -8,6 +8,7 @@ from xhab_spot.msg import *
 import identity
 import door_motor
 import os
+import initializer
 
 PUB_DELAY = 15
 
@@ -20,7 +21,7 @@ class DoorController(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/door"
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, DoorTask, self.callback)
-        self.door_open = False
+        self.door_open = initializer.get_variable("door_open")
 
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -37,6 +38,7 @@ class DoorController(object):
             door_motor.stop()
         
         print "writing status"
+        initializer.put_variable("door_open", self.door_open)
         with open("/home/xhab/data/door_status.txt", "w") as f:
             f.write("1" if self.door_open else "0")
         sys.stdout.flush()

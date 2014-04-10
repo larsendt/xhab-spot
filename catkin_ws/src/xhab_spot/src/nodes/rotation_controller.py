@@ -7,6 +7,7 @@ import time
 from xhab_spot.msg import *
 import identity
 import rotation_motor
+import initializer
 
 PUB_DELAY = 15
 
@@ -18,7 +19,7 @@ class RotationController(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/rotation"
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, RotationTask, self.callback)
-        self.rotation_angle = 0.0
+        self.rotation_angle = initializer.get_variable("rotation_angle", 0)
 
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -33,6 +34,8 @@ class RotationController(object):
             self.rotation_angle = msg.angle
             rotation_motor.counterclock(5)
             rotation_motor.stop()
+
+        initializer.put_variable("rotation_angle", self.rotation_angle)
         
         print "writing status"
         with open("/home/xhab/data/rotation_angle.txt", "w") as f:

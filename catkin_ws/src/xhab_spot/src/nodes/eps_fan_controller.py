@@ -7,6 +7,7 @@ import time
 import pins
 from xhab_spot.msg import *
 import identity
+import initializer
 
 PUB_DELAY = 15
 
@@ -18,13 +19,18 @@ class EPSFanController(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/eps_fan"
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, EPSFanTask, self.callback)
-        self.fan_on = False
+        self.fan_on = initializer.get_variable("eps_fan_on", True)
+
+        msg = EPSFanTask()
+        msg.on = self.fan_on
+        self.callback(msg)
 
     def callback(self, msg):
         print "got msg, target =", msg.target
 
         self.fan_on = msg.on
         spot_gpio.set_pin(pins.GPIO_EPS_FAN, msg.on)
+        initializer.put_variable("eps_fan_on", self.fan_on)
 
         print "writing status"
         with open("/home/xhab/data/eps_fan_on.txt", "w") as f:

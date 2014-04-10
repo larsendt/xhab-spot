@@ -9,6 +9,7 @@ import random
 import serial
 import ecwrapper
 import waterLevelDetector as wld
+import initializer
 
 PUB_DELAY = 15
 
@@ -20,11 +21,12 @@ class WaterLevelSensor(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/water_level"
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, WaterLevelTask, self.callback)
-        self.water_level = 0
+        self.water_level = initializer.get_variable("water_level", 4)
 
     def callback(self, msg):
         print "got msg, target =", msg.target
         self.water_level = wld.water_level_read(pins.GPIO_WATER_LEVEL, pins.ADC_WATER_LEVEL_PIN)
+        initializer.put_variable("water_level", self.water_level)
         
         print "read water level", self.water_level
 
