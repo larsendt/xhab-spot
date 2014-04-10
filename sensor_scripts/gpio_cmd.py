@@ -21,9 +21,9 @@ if len(sys.argv) == 3:
     print "Reading from %s" % spot_gpio.pin_path(pin)
     while True:
         if mode == "read":
-            print spot_gpio.get_pin(pin)
+            print ("1 " + ("="*80)) if spot_gpio.get_pin(pin) == 1 else 0
         elif mode == "readpullup":
-            print spot_gpio.get_pin_pullup(pin)
+            print ("1 " + ("="*80)) if spot_gpio.get_pin_pullup(pin) == 1 else 0
         time.sleep(0.5)
 
 #write
