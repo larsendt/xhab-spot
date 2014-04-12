@@ -184,4 +184,5 @@ also run these
 	
     sudo easy_install pip
     sudo pip install pyzmq
+    sudo pip install arrow
 

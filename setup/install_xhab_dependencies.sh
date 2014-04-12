@@ -20,3 +20,4 @@ apt-get -y install $PACKAGES
 echo "Installing extra python packages"
 easy_install pip
 pip install pyzmq
+pip install arrow
