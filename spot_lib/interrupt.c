@@ -193,5 +193,6 @@ int main(int _argc, char **_argv) {
     int oldValue = 0;        
     printf("interrupt listening for values\n");
     while (1) {        
+        sleep(1);
     }        
 }
