@@ -2,11 +2,27 @@
 import rospy
 import time
 import datetime
-import spot_node
 from xhab_spot.msg import *
 import identity
 import spot_topics
 
+
+def print_help():
+    print "battery"
+    print "camera"
+    print "door open"
+    print "door close"
+    print "ec"
+    print "eps fan on"
+    print "eps fan off"
+    print "lights <value> [reds_on]"
+    print "ph"
+    print "plant fan on"
+    print "plant fan off"
+    print "pump on"
+    print "pump off"
+    print "rotation <angle>"
+    print "water level"
 
 def lights_msg(brightness, reds):
     msg = LightsTask()
@@ -88,9 +104,8 @@ def rotation_msg(angle):
     return msg
     
 
-class SPOTCmd(spot_node.SPOTNode):
+class SPOTCmd():
     def __init__(self):
-        super(SPOTCmd, self).__init__()
         print "SPOTCmd init"
         pub_topic = "/tasks/" + identity.get_spot_name()
         self.publishers = spot_topics.make_task_publishers(pub_topic)
@@ -148,8 +163,12 @@ class SPOTCmd(spot_node.SPOTNode):
             elif cmd == "camera":
                 msg = camera_msg()
                 topic = "camera"
+            elif cmd == "help":
+                print_help()
+                continue
             else:
                 print "Unknown message!"
+                print "Type 'help' if you need it"
                 continue
             
             self.publishers[topic].publish(msg)
@@ -164,9 +183,6 @@ if __name__ == "__main__":
         t.spin()
     except rospy.ROSInterruptException:
         pass
-    finally:
-        print "cleanup!"
-        t.cleanup() 
 
 
 
