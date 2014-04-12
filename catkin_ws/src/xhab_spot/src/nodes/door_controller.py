@@ -20,6 +20,7 @@ class DoorController(object):
         subtopic = "/tasks/" + identity.get_spot_name() + "/door"
         pubtopic = "/data/" + identity.get_spot_name() + "/door"
         self.pub = rospy.Publisher(pubtopic, Data)
+        self.error_pub = rospy.Publisher("/alerts", Alert)
         self.sub = rospy.Subscriber(subtopic, DoorTask, self.callback)
         self.door_open = initializer.get_variable("door_open")
 
@@ -29,13 +30,19 @@ class DoorController(object):
         if msg.open:
             print "door open!"
             self.door_open = True
-            door_motor.clock(5)
-            door_motor.stop()
+            ok = door_motor.clock(5)
         else:
             print "door closed!"
             self.door_open = False
-            door_motor.counterclock(5)
-            door_motor.stop()
+            ok = door_motor.counterclock(5)
+
+        if not ok:
+            msg = Alert()
+            msg.spot_id = identity.get_spot_name()
+            msg.timestamp = rospy.Time.now()
+            msg.alert_text = "Door may be stuck!"
+            self.error_pub.publish(msg)
+            print "ERROR"
         
         print "writing status"
         initializer.put_variable("door_open", self.door_open)
