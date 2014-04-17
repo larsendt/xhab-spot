@@ -8,6 +8,7 @@ import time
 import random
 import battery_sensor
 import pins
+import initializer
 
 PUB_DELAY = 15
 
@@ -19,9 +20,10 @@ class BatterySensor(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/battery"
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, BatteryTask, self.callback)
-        self.charging = True
-        self.level = 0.51
-        self.full = False
+        self.charging = initializer.get_variable("battery_charging", False)
+        self.level = initializer.get_variable("battery_level", 0.50)
+        self.full = initializer.get_variable("battery_full", False)
+        self.callback(BatteryTask())
 
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -29,6 +31,9 @@ class BatterySensor(object):
         self.level = battery_sensor.battery_level(pins.ADC_BATTERY_LEVEL_PIN)
         self.level = min(1.0, self.level)
         self.full = True if self.level >= 1.0 else False
+        initializer.put_variable("battery_charging", self.charging)
+        initializer.put_variable("battery_level", self.level)
+        initializer.put_variable("battery_full", self.full)
 
     def spin(self):
         print "BatterySensor listening"

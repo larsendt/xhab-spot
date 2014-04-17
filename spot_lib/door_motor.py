@@ -1,5 +1,6 @@
 import time, os
 import pins
+import spot_gpio
  
 ## For simplicity's sake, we'll create a string for our paths.
 GPIO_MODE_PATH= os.path.normpath('/sys/devices/virtual/misc/gpio/mode/')
@@ -28,44 +29,41 @@ for pin in pinMode:
     file.write(OUTPUT)      ## set the mode of the pin
     file.close()            ## IMPORTANT- must close file to make changes!
 
-## Clockwise rotation function
-def clock(dur):   
-    print "clock:", dur
-    file = open(pinData[0], 'r+') ##open the file in r/w mode
-    file.write(LOW)        ## set the pin to LOW
-    file.close()           ## IMPORTANT - must close file to make changes!
+def _rotate(_open, _close, max_duration):
+    start_time = time.time()
 
-    file = open(pinData[1], 'r+') ##open the file in r/w mode
-    file.write(HIGH)        ## set the pin to HIGH
-    file.close()           ## IMPORTANT - must close file to make changes!
+    spot_gpio.set_pin(pins.GPIO_DOOR_MOTOR_OPEN, _open)
+    spot_gpio.set_pin(pins.GPIO_DOOR_MOTOR_CLOSE, _close)
 
-    time.sleep(dur)
+    # wait for the hall effect sensor to go to zero
+    time.sleep(1)
+
+    while True:
+        done = spot_gpio.get_pin(pins.GPIO_HALL_EFFECT_PIN)
+        if done:
+            print "hall effect sensor triggered"
+            stop()
+            return True
+        else:
+            now = time.time()
+            if now - start_time > (max_duration - 1):
+                print "hall effect sensor didn't trigger in %d seconds!" % max_duration
+                stop()
+                return False
 
 
-## Counter-clockwise rotation function
-def counterclock(dur):
-    print "counterclock:", dur
-    file = open(pinData[0], 'r+') ##open the file in r/w mode
-    file.write(HIGH)        ## set the pin to HIGH
-    file.close()           ## IMPORTANT - must close file to make changes!
+def clock(max_duration):
+    print "door clockwise (%d seconds)" % max_duration
+    return _rotate(True, False, max_duration)
 
-    file = open(pinData[1], 'r+') ##open the file in r/w mode
-    file.write(LOW)        ## set the pin to LOW
-    file.close()           ## IMPORTANT - must close file to make changes!
-    
-    time.sleep(dur)
+def counterclock(max_duration):
+    print "door ccw (%d seconds)" % max_duration
+    return _rotate(False, True, max_duration)
 
-## Break operation function
 def stop():
-    print "stop"
-    file = open(pinData[0], 'r+') ##open the file in r/w mode
-    file.write(LOW)        ## set the pin to LOW
-    file.close()           ## IMPORTANT - must close file to make changes!
+    spot_gpio.set_pin(pins.GPIO_DOOR_MOTOR_OPEN, False)
+    spot_gpio.set_pin(pins.GPIO_DOOR_MOTOR_CLOSE, False)
 
-    file = open(pinData[1], 'r+') ##open the file in r/w mode
-    file.write(LOW)        ## set the pin to LOW
-    file.close()           ## IMPORTANT - must close file to make changes!
-    
 
 if __name__ == "__main__":
     print "1. Counter-Clockwise rotation" 

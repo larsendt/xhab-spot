@@ -7,6 +7,7 @@ import time
 import pins
 from xhab_spot.msg import *
 import identity
+import initializer
 
 PUB_DELAY = 15
 
@@ -18,7 +19,8 @@ class PumpController(object):
         pubtopic = "/data/" + identity.get_spot_name() + "/pump"
         self.pub = rospy.Publisher(pubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, PumpTask, self.callback)
-        self.pump_on = False
+        self.pump_on = initializer.get_variable("pump_on", True)
+        self.callback(PumpTask())
 
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -29,6 +31,8 @@ class PumpController(object):
         else:
             self.pump_on = False
             spot_gpio.set_pin(pins.GPIO_PUMP_PIN, False)
+
+        initializer.put_variable("pump_on", self.pump_on)
 
         if msg.temporary_disable:
             print "Temporary disabling of the pump is not implemented yet!"

@@ -12,7 +12,7 @@ def kill_proc():
         PWM_PROC.kill()
         PWM_PROC.wait()
 
-sys.excepthook = kill_proc
+sys.excepthook = lambda (x, y, z): kill_proc()
 
 def set_pwm_pin(pin, value):
     if pin not in [3, 9, 10, 11]:

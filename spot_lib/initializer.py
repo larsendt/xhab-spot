@@ -29,16 +29,16 @@ def put_variable(key, value):
     finally:
         lock.release()
 
-def get_variable(key):
+def get_variable(key, default=None):
     obj = {}
     if os.path.exists(DATAPATH):
         with open(DATAPATH, "r") as f:
             try:
                 obj = json.load(f)
             except:
-                return None
+                return default
     
-    return obj.get(key)
+    return obj.get(key, default)
 
 if __name__ == "__main__":
     put_variable("asdf", "hjkl")

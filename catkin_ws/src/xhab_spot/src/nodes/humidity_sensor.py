@@ -8,6 +8,8 @@ import time
 import random
 import serial
 import ecwrapper
+import initializer
+import pins
 
 PUB_DELAY = 15
 
@@ -21,12 +23,14 @@ class HumiditySensor(object):
         airpubtopic = "/data/" + identity.get_spot_name() + "/air_temperature"
         self.airpub = rospy.Publisher(airpubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, HumidityTask, self.callback)
-        self.humidity_reading = 0.0
-        self.air_temp = 0.0
-        
+        self.humidity_reading = initializer.get_variable("humidity_reading", 0.0)
+        self.air_temp = initializer.get_variable("air_temp", 0.0)
+        self.callback(HumidityTask())        
 
     def callback(self, msg):
         print "got msg, target =", msg.target
+        initializer.put_variable("humidity_reading", self.humidity_reading)
+        initializer.put_variable("air_temp", self.air_temp)
         
 
     def spin(self):
@@ -45,6 +49,7 @@ class HumiditySensor(object):
             self.airpub.publish(pubmsg)
             print "Published air temp:", self.air_temp
             time.sleep(PUB_DELAY)
+
 
 
 if __name__ == "__main__":

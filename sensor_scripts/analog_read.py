@@ -6,8 +6,10 @@ and outputs a "graph"
 """
 
 import time
+import sys
 
-fname = "/proc/adc2"
+fname = "/proc/adc" + sys.argv[1]
+print "Reading from:", fname
 
 while 1:
     with open(fname, "r") as f:

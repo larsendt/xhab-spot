@@ -8,6 +8,8 @@ from xhab_spot.msg import *
 import identity
 import time
 import spot_pwm
+import pins
+import initializer
 
 PUB_DELAY = 15
 
@@ -20,12 +22,16 @@ class LightController(object):
         self.pub = rospy.Publisher(pubtopic, Data)
         self.alert_pub = rospy.Publisher("/alerts/" + identity.get_spot_name(), Alert)
         self.sub = rospy.Subscriber(subtopic, LightsTask, self.callback)
-        self.brightness = 0.75
-        self.reds_on = False
+        self.brightness = initializer.get_variable("lights_brightness", 1.0)
+        self.reds_on = initializer.get_variable("lights_reds_on", False)
         self.disabled = False
         self.disable_start = 0
         self.disable_stop = 0
-        sys.stdout.flush()
+
+        msg = LightsTask()
+        msg.brightness = self.brightness
+        msg.reds_on = self.reds_on
+        self.callback(msg)
 
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -38,6 +44,9 @@ class LightController(object):
 
         spot_pwm.set_pwm_pin(pins.GPIO_LIGHTS_BRIGHTNESS_PIN, self.brightness)
         spot_gpio.set_pin(pins.GPIO_RED_LIGHTS_PIN, self.reds_on)
+
+        initializer.put_variable("lights_brightness", self.brightness)
+        initializer.put_variable("lights_reds_on", self.reds_on)
 
         if msg.disable_minutes > 0:
             spot_pwm.set_pwm_pin(pins.GPIO_LIGHTS_BRIGHTNESS_PIN, 0.0)

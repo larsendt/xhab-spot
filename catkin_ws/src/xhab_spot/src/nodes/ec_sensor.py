@@ -9,6 +9,7 @@ import random
 import serial
 import ecwrapper
 import pins
+import initializer
 
 PUB_DELAY = 15
 
@@ -22,9 +23,9 @@ class ECSensor(object):
         waterpubtopic = "/data/" + identity.get_spot_name() + "/water_temperature"
         self.waterpub = rospy.Publisher(waterpubtopic, Data)
         self.sub = rospy.Subscriber(subtopic, ECTask, self.callback)
-        self.ec_reading = 0.0
-        self.water_temp = 0.0
-        sys.stdout.flush()
+        self.ec_reading = initializer.get_variable("ec_reading", 0)
+        self.water_temp = initializer.get_variable("water_temp", 0)
+        self.callback(ECTask())
         
     def callback(self, msg):
         print "got msg, target =", msg.target
@@ -35,7 +36,8 @@ class ECSensor(object):
         
         print "read EC value:", self.ec_reading
         print "read water temp:", self.water_temp
-        sys.stdout.flush()
+        initializer.put_variable("ec_reading", self.ec_reading)
+        initializer.put_variable("water_temp", self.water_temp)
 
     def spin(self):
         print "ECSensor listening"
@@ -52,7 +54,6 @@ class ECSensor(object):
             pubmsg.value = self.water_temp
             self.waterpub.publish(pubmsg)
             print "Published water temp:", self.water_temp
-            sys.stdout.flush()
             time.sleep(PUB_DELAY)
 
 
