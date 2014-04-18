@@ -35,21 +35,30 @@ def _rotate(_open, _close, max_duration):
     spot_gpio.set_pin(pins.GPIO_DOOR_MOTOR_OPEN, _open)
     spot_gpio.set_pin(pins.GPIO_DOOR_MOTOR_CLOSE, _close)
 
-    # wait for the hall effect sensor to go to zero
-    time.sleep(1)
+    counter = 0
+    lasthall = not spot_gpio.get_pin(pins.GPIO_HALL_HALL_EFFECT_PIN)
 
     while True:
-        done = spot_gpio.get_pin(pins.GPIO_HALL_EFFECT_PIN)
-        if done:
-            print "hall effect sensor triggered"
-            stop()
-            return True
-        else:
+        hall = not spot_gpio.get_pin(pins.GPIO_HALL_EFFECT_PIN)
+
+        if hall != lasthall:
+            print "Hall effect triggered (%s). Counter is: %d" % (hall, counter)
+            lasthall = hall
+            if hall:
+                counter += 1
+            time.sleep(0.5)
+
+        if counter < 2:
             now = time.time()
-            if now - start_time > (max_duration - 1):
-                print "hall effect sensor didn't trigger in %d seconds!" % max_duration
+            if now - start_time > max_duration:
+                print "time exceeded!"
                 stop()
                 return False
+        elif counter == 2:
+            print "turning finished"
+            stop()
+            counter = 0
+            return True
 
 
 def clock(max_duration):
