@@ -10,6 +10,7 @@ import serial
 import ecwrapper
 import initializer
 import pins
+import sht
 
 PUB_DELAY = 15
 
@@ -25,13 +26,15 @@ class HumiditySensor(object):
         self.sub = rospy.Subscriber(subtopic, HumidityTask, self.callback)
         self.humidity_reading = initializer.get_variable("humidity_reading", 0.0)
         self.air_temp = initializer.get_variable("air_temp", 0.0)
-        self.callback(HumidityTask())        
+        self.callback(HumidityTask())
 
     def callback(self, msg):
         print "got msg, target =", msg.target
+        self.humidity_reading = sht.getHumidity(pins.GPIO_TEMP_HUMIDITY_PIN_1, pins.GPIO_TEMP_HUMIDITY_PIN_2)
+        self.air_temp = sht.getTemperature(pins.GPIO_TEMP_HUMIDITY_PIN_1, pins.GPIO_TEMP_HUMIDITY_PIN_2)
         initializer.put_variable("humidity_reading", self.humidity_reading)
         initializer.put_variable("air_temp", self.air_temp)
-        
+
 
     def spin(self):
         print "HumiditySensor listening"
